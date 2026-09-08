@@ -1,0 +1,72 @@
+{
+  "schema": "progress-agent/exam-paper",
+  "id": "paper-day2-error-recovery-v0.1",
+  "title": "Day 2 错误恢复 · 验收卷",
+  "version": "0.1",
+  "created": "2026-09-08",
+  "grader": "coach",
+  "pass_condition": "Q1-Q3 全对；Q4 输出符合验收；Q5 能说清停止机制并给出防重试思路",
+  "instructions": [
+    "先完成 Day 2 代码任务并运行通过，再作答本卷。",
+    "闭卷；允许看自己代码与运行命令；不许问 AI 要答案。"
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "ability_ids": ["A4", "B1"],
+      "type": "single_choice",
+      "points": 1,
+      "prompt": "模型返回 tool_calls 后，正确的处理顺序是？",
+      "options": {
+        "A": "追加带 tool_calls 的 assistant 消息 → 执行工具 → 结果以 role=tool（带 tool_call_id）追加 → 再次调用模型",
+        "B": "直接执行工具 → 把结果拼进 user 消息 → 再次调用模型",
+        "C": "先追加工具结果 → 再追加 assistant 消息 → 再次调用模型"
+      },
+      "answer": "A",
+      "explanation": "assistant 消息携带 tool_calls，随后每条 tool 结果用 tool_call_id 配对；顺序错误模型无法理解对话。"
+    },
+    {
+      "id": "Q2",
+      "ability_ids": ["A4", "B2"],
+      "type": "single_choice",
+      "points": 1,
+      "prompt": "工具结果消息的 role 写成了 assistant，错在哪？",
+      "options": {
+        "A": "role 应为 tool",
+        "B": "role 应为 function",
+        "C": "content 必须 JSON 编码",
+        "D": "不应带 tool_call_id"
+      },
+      "answer": "A",
+      "explanation": "OpenAI 兼容协议要求工具执行结果 role 为 tool。"
+    },
+    {
+      "id": "Q3",
+      "ability_ids": ["B1", "B2"],
+      "type": "single_choice",
+      "points": 1,
+      "prompt": "如果工具结果 role 错误且最大轮数保护被删掉，会发生什么？",
+      "options": {
+        "A": "模型看不到结果，一直重复请求工具，无限循环",
+        "B": "正常给出最终回答",
+        "C": "立即崩溃"
+      },
+      "answer": "A",
+      "explanation": "role 错误 → 模型没收到结果 → 倾向继续请求同一工具；max_attempts 是兜底。"
+    },
+    {
+      "id": "Q4",
+      "ability_ids": ["B2", "E6"],
+      "type": "task",
+      "prompt": "贴出两个命令的真实运行输出：天气（应优雅失败）与日期（应正常）。",
+      "acceptance": "天气命令无堆栈、含 [工具错误] 与诚实回答；日期命令正常。"
+    },
+    {
+      "id": "Q5",
+      "ability_ids": ["B2", "D5"],
+      "type": "short_answer",
+      "prompt": "工具持续失败时，说明停止机制，并写出限制同一工具重试不超过 2 次的思路或伪代码（≤8 行）。",
+      "acceptance": "提到轮数上限/最终回答停止；给出按工具计数或禁用工具的容错设计。"
+    }
+  ]
+}

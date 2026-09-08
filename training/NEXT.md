@@ -15,8 +15,8 @@
 2. 用户运行验证：
    - `python3 training/day2-error-recovery/agent.py "上海天气怎么样？"`（应优雅回答，不再崩）
    - `python3 training/day2-error-recovery/agent.py "今天是几号？"`（Day 1 功能不能坏）
-3. 用户回答三个复述题（为什么喂错误给模型 / 会不会无限重试 / 如何限制重试坏工具）。
-4. review 通过后：把 Day 2 总结补进 `day2-error-recovery/README.md`，更新本文件指向 Day 3，然后 `git commit`。
+3. 用户作答 [Day 2 验收卷](../assessments/papers/day2-error-recovery-验收卷-v0.1.md)（5 道具体题：选择 + 运行输出 + 设计题），不再是“会不会”式自评。
+4. 教练批改试卷 + review 代码通过后：把 Day 2 总结补进 `day2-error-recovery/README.md`，更新本文件指向 Day 3，然后 `git commit`。
 
 ## 规则提醒
 
