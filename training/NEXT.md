@@ -2,6 +2,8 @@
 
 > 每次新对话开始时，先读这个文件，就知道接下来让用户干什么。
 
+> 总地图与阶段说明见 [plans/README.md](../plans/README.md)。
+
 ## 当前状态（2026-09-08）
 
 - Day 1（工具调用循环）：✅ 已完成，总结已写入 [day1-mini-agent/README.md](day1-mini-agent/README.md)
