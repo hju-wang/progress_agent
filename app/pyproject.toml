@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "progress-agent"
+version = "0.1.0"
+description = "ProgressAgent：由岗位 JD 驱动、以真实检测为依据、能够自我演进的求职成长系统（自测 CLI）"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+progress-agent = "progress_agent.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

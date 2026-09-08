@@ -1,0 +1,276 @@
+{
+  "schema": "progress-agent/ability-model",
+  "role": "agent-application-developer",
+  "role_label": "Agent 应用开发工程师",
+  "model_version": "0.1",
+  "status": "draft",
+  "created": "2026-09-08",
+  "mastery_levels": [
+    { "level": 0, "label": "未知", "meaning": "没接触过，说不清是什么" },
+    { "level": 1, "label": "概念", "meaning": "能说出是什么、有什么用" },
+    { "level": 2, "label": "照做", "meaning": "有参考或教程时能实现" },
+    { "level": 3, "label": "独立", "meaning": "限时、少 AI 辅助也能独立完成并解释设计" },
+    { "level": 4, "label": "调优", "meaning": "理解权衡，能按场景调优并讲清楚为什么" }
+  ],
+  "dimensions": [
+    {
+      "id": "A",
+      "name": "大模型基础与应用",
+      "description": "Agent 应用开发直接消费 LLM 能力，需要理解模型边界、提示与结构化输出、上下文管理、工具调用与 RAG。",
+      "items": [
+        {
+          "id": "A1",
+          "name": "模型能力边界与选型",
+          "description": "能说明主流模型差异、上下文窗口、能力边界与成本延迟权衡，能根据场景选型。",
+          "detection_methods": ["knowledge_q", "interview"],
+          "detection_note": "知识题 + 面试：为什么这个场景选这个模型？"
+        },
+        {
+          "id": "A2",
+          "name": "提示工程与结构化输出",
+          "description": "系统提示、Few-shot、JSON/结构化输出与解析容错，能写出鲁棒的 Prompt 并处理输出异常。",
+          "detection_methods": ["knowledge_q", "practical_task"],
+          "detection_note": "实操：给定场景设计 Prompt，考察对非结构化/异常输出的处理。"
+        },
+        {
+          "id": "A3",
+          "name": "上下文管理",
+          "description": "Token 估算、历史裁剪/摘要、长任务上下文策略；知道何时该带、何时该丢上下文。",
+          "detection_methods": ["knowledge_q", "interview"],
+          "detection_note": "追问：多轮对话历史无限增长怎么办？"
+        },
+        {
+          "id": "A4",
+          "name": "Function Calling / 工具调用",
+          "description": "工具 Schema 设计、参数校验、并行工具调用、调用失败与返回错误处理。",
+          "detection_methods": ["practical_task", "knowledge_q"],
+          "detection_note": "实操：实现一个工具循环，考察 Schema 质量与错误恢复。"
+        },
+        {
+          "id": "A5",
+          "name": "RAG 检索增强实战",
+          "description": "文档加载、分块、Embedding、向量/关键词检索、重排、引用溯源与索引更新，能解决幻觉并解释取舍。",
+          "detection_methods": ["practical_task", "interview"],
+          "detection_note": "基于 rag-demo 接触点深挖：检索不准怎么排查？索引更新策略？"
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "name": "Agent 核心与编排",
+      "description": "岗位的核心差异能力：能把 LLM 变成会规划、会调用工具、能完成任务的 Agent，并做好编排、状态与容错。",
+      "items": [
+        {
+          "id": "B1",
+          "name": "Agent 运行循环（ReAct / Plan-and-Execute）",
+          "description": "理解并能在不依赖框架的情况下实现 Agent 主循环：思考 → 工具调用 → 观察 → 再决策，含终止条件。",
+          "detection_methods": ["practical_task", "interview"],
+          "detection_note": "追问：为什么要 ReAct？循环失控/死循环怎么防？"
+        },
+        {
+          "id": "B2",
+          "name": "工具调用循环与错误恢复",
+          "description": "工具执行失败、模型输出非法参数、工具副作用重复执行时的处理；重试、回退与幂等设计。",
+          "detection_methods": ["practical_task", "interview"],
+          "detection_note": "场景题：工具连续失败两次，Agent 应该怎么办？"
+        },
+        {
+          "id": "B3",
+          "name": "主流 Agent 框架运用",
+          "description": "熟练使用 LangGraph / LangChain / OpenAI Agents SDK / LlamaIndex 等至少一种，能对比选型并说明各自适用边界。",
+          "detection_methods": ["practical_task", "interview"],
+          "detection_note": "实操：用框架搭一个带条件分支的工作流；追问：框架帮你做了什么、藏了什么坑？"
+        },
+        {
+          "id": "B4",
+          "name": "多 Agent 与工作流编排",
+          "description": "单/多 Agent 划分、通信模式、任务拆解与结果汇聚、冲突与死锁处理、终止与超时。",
+          "detection_methods": ["design_interview", "interview"],
+          "detection_note": "设计题：把一条复杂业务流程拆成多 Agent 协作，讲清边界与失败场景。"
+        },
+        {
+          "id": "B5",
+          "name": "状态、记忆与长任务",
+          "description": "会话状态、持久化/断点续跑、短期与长期记忆、任务中间结果保存与恢复。",
+          "detection_methods": ["knowledge_q", "design_interview"],
+          "detection_note": "场景：任务执行到一半进程挂了，怎么恢复？"
+        },
+        {
+          "id": "B6",
+          "name": "人机协同与执行监督",
+          "description": "审批节点、用户打断、过程可视化、关键动作留痕，让 Agent 在真实业务里可控、可解释。",
+          "detection_methods": ["interview", "design_interview"],
+          "detection_note": "设计题：什么动作必须人工确认？怎么让用户信任 Agent 结果？"
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "name": "工具与生态",
+      "description": "Agent 要真正做事，必须接入工具与系统：MCP、工具设计、记忆、系统集成与安全边界。",
+      "items": [
+        {
+          "id": "C1",
+          "name": "MCP 协议与 MCP Server 开发",
+          "description": "理解 MCP 是什么、解决什么问题、Client/Server 与传输方式；能开发、集成并排查 MCP Server。",
+          "detection_methods": ["knowledge_q", "practical_task"],
+          "detection_note": "实操：写一个最小 MCP Server 并接入 Agent；追问：MCP 比普通 HTTP 工具多了什么？"
+        },
+        {
+          "id": "C2",
+          "name": "工具/API 设计",
+          "description": "工具语义清晰、Schema 规范、输入校验、副作用可控、鉴权与最小权限。",
+          "detection_methods": ["code_review", "design_interview"],
+          "detection_note": "审查：给定一个工具 Schema，找出会让 LLM 误用或越权的问题。"
+        },
+        {
+          "id": "C3",
+          "name": "记忆系统设计",
+          "description": "短期上下文记忆与长期记忆的存取、向量记忆、更新/遗忘策略、记忆污染防护。",
+          "detection_methods": ["knowledge_q", "design_interview"],
+          "detection_note": "场景：用户画像/项目历史该存哪、怎么更新、怎么防止记错？"
+        },
+        {
+          "id": "C4",
+          "name": "外部系统集成",
+          "description": "对接搜索、数据库、办公/业务系统（CRM/OA/IM）、HTTP API 等，能把多系统编排成端到端自动化。",
+          "detection_methods": ["practical_task", "design_interview"],
+          "detection_note": "设计题：把一个业务动作（如自动建单+通知）串成工具链，讲清鉴权与失败处理。"
+        },
+        {
+          "id": "C5",
+          "name": "代码执行与沙箱安全",
+          "description": "Coding Agent 场景下代码执行沙箱、权限隔离、资源限制、危险操作识别与回滚。",
+          "detection_methods": ["knowledge_q", "design_interview"],
+          "detection_note": "追问：让 Agent 执行生成的代码，你怎么保证安全？"
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "name": "评测与质量",
+      "description": "真实岗位不只要 Demo，还要能证明效果：建 Eval、自动化评测、可观测、Guardrail 与成本优化。",
+      "items": [
+        {
+          "id": "D1",
+          "name": "Eval 数据集与场景设计",
+          "description": "围绕真实场景构建 golden set 与对抗样本，覆盖边界与失败模式，区分回归与新增能力。",
+          "detection_methods": ["practical_task", "interview"],
+          "detection_note": "设计：给一个 Agent 场景设计 10 条 Eval 用例并说明为什么覆盖得住。"
+        },
+        {
+          "id": "D2",
+          "name": "LLM-as-Judge / 自动化评测",
+          "description": "用 LLM 当裁判的协议、评分维度、偏差控制、人工抽检与指标汇总。",
+          "detection_methods": ["knowledge_q", "practical_task"],
+          "detection_note": "追问：LLM 裁判会自嗨吗？怎么发现它打分不可靠？"
+        },
+        {
+          "id": "D3",
+          "name": "可观测性与调试",
+          "description": "Trace/日志/输入输出留痕、检索命中与工具调用可视化，能定位“Agent 为什么答错/卡住”。",
+          "detection_methods": ["practical_task", "interview"],
+          "detection_note": "场景：Agent 在真实环境成功率下降，你第一步看什么？"
+        },
+        {
+          "id": "D4",
+          "name": "Guardrail、安全与合规",
+          "description": "Prompt 注入、工具越权、敏感信息泄露、内容合规与数据边界的基本防护。",
+          "detection_methods": ["knowledge_q", "design_interview"],
+          "detection_note": "追问：用户让 Agent“忘掉安全规则”，怎么防？"
+        },
+        {
+          "id": "D5",
+          "name": "效果/成本/延迟优化",
+          "description": "模型分级、缓存、并行、Token 压缩、检索前置过滤等，能衡量并优化单位任务成本与响应延迟。",
+          "detection_methods": ["interview", "design_interview"],
+          "detection_note": "设计题：一个高频 Agent 任务太贵/太慢，你怎么降本增效？"
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "name": "Python 工程能力（硬门槛）",
+      "description": "市场 JD 普遍硬性要求 Python。不从头教语法，按需补漏；检测以独立完成、少 AI 辅助为前提。",
+      "items": [
+        {
+          "id": "E1",
+          "name": "Python 语言惯用法与类型标注",
+          "description": "类型标注、数据结构选型、生成器/迭代器、异常处理、dataclass/Pydantic 等现代 Python 写法。",
+          "detection_methods": ["practical_task", "code_review"],
+          "detection_note": "代码任务：看代码风格是否像 Python，而不是翻译成 Python 的 Go。"
+        },
+        {
+          "id": "E2",
+          "name": "async 与并发",
+          "description": "async/await、asyncio、限流与超时、并发安全；知道何时并发、何时串行。",
+          "detection_methods": ["practical_task", "knowledge_q"],
+          "detection_note": "实操：并发调用多个工具并做限流/超时。"
+        },
+        {
+          "id": "E3",
+          "name": "FastAPI / Web 服务与流式输出",
+          "description": "REST + SSE/流式接口、错误模型、中间件与优雅退出；能独立交付可部署的 AI 应用后端。",
+          "detection_methods": ["practical_task", "code_review"],
+          "detection_note": "实操：实现一个带 SSE 的 Agent 对话接口。"
+        },
+        {
+          "id": "E4",
+          "name": "测试与代码质量",
+          "description": "pytest、mock 外部调用、关键链路集成测试；ruff/mypy 等质量工具能跑通并保持整洁。",
+          "detection_methods": ["code_review", "practical_task"],
+          "detection_note": "给任务补测试：重点看会不会 mock 外部 LLM/工具调用。"
+        },
+        {
+          "id": "E5",
+          "name": "Python 工程化",
+          "description": "uv/pyproject、配置与密钥管理、结构化日志、Pydantic 数据模型与数据校验。",
+          "detection_methods": ["code_review", "interview"],
+          "detection_note": "代码审查：依赖、配置、日志、数据结构是否工程化。"
+        },
+        {
+          "id": "E6",
+          "name": "独立排查与调试",
+          "description": "不依赖 AI 也能读懂报错、定位问题、修复并验证；这是“真实水平”的试金石。",
+          "detection_methods": ["practical_task"],
+          "detection_note": "限时独立任务：给一个带 bug 的小项目，要求少用/不用 AI 完成修复并解释。"
+        }
+      ]
+    },
+    {
+      "id": "F",
+      "name": "求职交付",
+      "description": "能力要能被面试官看见和信任：会讲项目、会画架构、会对齐 JD、会应对追问。",
+      "items": [
+        {
+          "id": "F1",
+          "name": "项目叙事与贡献边界",
+          "description": "用 STAR 讲清项目目标、个人真实贡献与技术决策，能如实说明 AI 参与度而不心虚。",
+          "detection_methods": ["interview"],
+          "detection_note": "mock：挑一个项目深挖到设计决策，看讲不讲得清。"
+        },
+        {
+          "id": "F2",
+          "name": "Agent 系统设计表达",
+          "description": "能白板画出 Agent 架构：模块、数据流、状态、失败路径与权衡，并回答“为什么不这么做”。",
+          "detection_methods": ["design_interview"],
+          "detection_note": "mock：现场设计一个多 Agent 系统并接受追问。"
+        },
+        {
+          "id": "F3",
+          "name": "JD 对齐与简历表达",
+          "description": "针对具体 JD 提炼匹配点、调整简历要点、准备可验证的项目证据。",
+          "detection_methods": ["interview", "knowledge_q"],
+          "detection_note": "拿真实 JD 做对齐演练：这段要求对应你哪个证据？"
+        },
+        {
+          "id": "F4",
+          "name": "面试应对与追问",
+          "description": "不会时不硬编、能把未知问题转化为已知框架、会反问澄清需求。",
+          "detection_methods": ["interview"],
+          "detection_note": "mock 中连续追问，观察应对与诚实度。"
+        }
+      ]
+    }
+  ]
+}
