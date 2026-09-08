@@ -6,17 +6,21 @@
 
 ## 当前状态（2026-09-08）
 
-- Day 1（工具调用循环）：✅ 已完成，总结已写入 [day1-mini-agent/README.md](day1-mini-agent/README.md)
-- Day 2（错误恢复）：🔄 进行中，练习在 [day2-error-recovery/](day2-error-recovery/)
+- Day 1（工具调用循环）：✅ 已完成
+- Day 2（错误恢复）：✅ 已完成，总结已写入 [day2-error-recovery/README.md](day2-error-recovery/README.md)
+- Day 3（RAG 检索工具）：⬜ 待开始（尚无 `training/day3-*` 目录）
 
 ## 接下来要做什么
 
-1. 让用户修改 `training/day2-error-recovery/agent.py` 的 `run_agent`：在调用 `execute_tool` 处加 `try / except`，把异常转成 `"[工具错误] ..."`，仍以 `role="tool"` 喂回模型。
-2. 用户运行验证：
-   - `python3 training/day2-error-recovery/agent.py "上海天气怎么样？"`（应优雅回答，不再崩）
-   - `python3 training/day2-error-recovery/agent.py "今天是几号？"`（Day 1 功能不能坏）
-3. 用户作答 [Day 2 验收卷](../assessments/papers/day2-error-recovery-验收卷-v0.1.md)（5 道具体题：选择 + 运行输出 + 设计题），不再是“会不会”式自评。
-4. 教练批改试卷 + review 代码通过后：把 Day 2 总结补进 `day2-error-recovery/README.md`，更新本文件指向 Day 3，然后 `git commit`。
+1. 先按 [2026-W37 周计划](../plans/2026-W37-第一周-最小Agent循环.md) 创建 `training/day3-rag-tool/` 脚手架（可运行示例 + TODO + 验证命令 + 验收卷），再让用户开跑。
+2. Day 3 目标：把 RAG 做成“检索工具”接进 Agent——复用 Day 1/2 的工具循环，新增检索类工具，让模型在需要资料时调用它。
+3. 用户完成任务并运行验证后作答 Day 3 验收卷。
+4. 教练批改 + review 通过后：总结进当天 README → 更新本文件指向 Day 4 → `git commit`。
+
+## 遗留提示（诚实记录）
+
+- Day 2 试卷 Q5.2（坏工具限流）为教练提供参考答案，用户**非独立完成**，D5 暂不记为已掌握。
+- Day 6 独立检验需复测“同一坏工具重试不超过 2 次”的容错设计，防止该缺口被跳过。
 
 ## 规则提醒
 

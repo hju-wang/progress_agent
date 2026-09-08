@@ -11,6 +11,10 @@
 
 - [mini-agent + Day 1 总结](day1-mini-agent/README.md)：用户提问 → 工具调用 → 结果回填 → 最终回答。
 
-## Day 2：错误恢复（进行中）
+## Day 2：错误恢复（已通过）
 
-- [README](day2-error-recovery/README.md)：工具报错时 Agent 不崩、会自救。
+- [README + Day 2 总结](day2-error-recovery/README.md)：工具报错时 Agent 不崩、会自救。
+
+## Day 3：RAG 检索工具（待开始）
+
+- 目标：把 RAG 做成“检索工具”接进 Agent；脚手架待创建。

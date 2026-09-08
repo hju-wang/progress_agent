@@ -195,9 +195,12 @@ def run_agent(question: str, max_attempts: int = 4) -> None:
             arguments = json.loads(function.get("arguments") or "{}")
             print(f"[工具] {name}({arguments})")
 
-            result = execute_tool(name, arguments)
+            try:
+                result = execute_tool(name, arguments)
+            except Exception as e:
+                result = f"[工具错误] {e}"
+                     
             print(f"[结果] {result}")
-
             tool_result = build_tool_result(tool_call["id"], result)
             if tool_result.get("role") != "tool":
                 raise AssertionError(

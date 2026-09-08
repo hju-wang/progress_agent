@@ -14,6 +14,10 @@ C. 先追加工具结果 → 再追加 `assistant` 消息 → 再次调用模型
 
 对应能力项：A4、B1
 
+答：选 A 但是我有点疑惑，没看到有追加 assistant 消息
+
+批注（教练）：A 正确。带 `tool_calls` 的 `assistant` 消息在 `run_agent` 里 `call_llm` 之后、执行工具之前就已追加（`training/day2-error-recovery/agent.py` 第 179 行起）；运行日志只打印 `[工具]` / `[结果]`，不打印 messages，所以“看不到”。
+
 ---
 
 **Q2（单选）** 下面是 Day 1 里故意埋错的代码（现在你应已改正）：
@@ -35,6 +39,8 @@ D. 工具结果消息不应该带 `tool_call_id`
 
 对应能力项：A4、B2
 
+答：A
+
 ---
 
 **Q3（单选）** 如果 Q2 的错误没改（结果消息的 role 一直是 `"assistant"`），并且有人把最大轮数保护删掉了，Agent 会发生什么？
@@ -44,6 +50,8 @@ B. 模型会正常给出最终回答
 C. 程序立刻崩溃
 
 对应能力项：B1、B2
+
+答：A
 
 ---
 
@@ -58,11 +66,73 @@ python3 training/day2-error-recovery/agent.py "今天是几号？"
 
 对应能力项：B2、E6
 
+答：
+```shell
+ python3 training/day2-error-recovery/agent.py "上海天气怎么样"
+
+--- 第 1 轮 ---
+[工具] get_weather({'city': '上海'})
+[结果] [工具错误] 天气服务暂时不可用（city=上海）
+
+--- 第 2 轮 ---
+[最终回答] 抱歉，天气服务目前暂时不可用，我暂时无法查询到上海的实时天气情况。
+
+由于天气服务不稳定，我无法为你提供准确的天气预报。建议你可以：
+
+1. **稍后再试**——我随时可以帮你重新查询
+2. **访问天气网站或App**——如中国天气网、天气预报等官方渠道获取准确信息
+
+如果你需要的话，我可以再帮你尝试一次查询，或者帮你获取当前的时间信息。有什么其他可以帮你的吗？
+❯ python3 training/day2-error-recovery/agent.py "今天是几号"
+
+--- 第 1 轮 ---
+[工具] get_current_date({})
+[结果] 2026-09-08
+
+--- 第 2 轮 ---
+[最终回答] 今天是 **2026年9月8日**（星期二）。
+
+```
+
 ---
 
 **Q5（设计与代码）** 如果一个工具**每次都失败**（比如天气服务持续宕机），只靠“把错误喂回模型”够吗？请回答两个小问：
 
 1. 这个 Agent 会无限重试吗？如果不会，是靠什么停下来的？
+   答：不会无限重试，当模型不在返回 tool_calls 的时候，会停止，并且通过 attempt 兜底
 2. 写一小段思路或伪代码（≤8 行），说明你会如何限制“同一把坏工具不要反复重试超过 2 次”。
+   答：
+   ```python
+   # 定义一个tool 调用计数器
+   tool_call_count = {}
+
+    for tool_call in tool_calls:
+
+        function = tool_call["function"]
+        name = function["name"]
+        
+        if name not in tool_call_count or tool_count_count[name] > 2:
+            执行工具
+            追加message
+               
+   
+   ```
+
+教练参考答案（用户要求直接给答案；本题**非独立完成**，D5 需在 Day 6 复验）：
+```python
+tool_call_count = {}  # 放在所有轮次之外：{工具名: 已失败次数}
+
+for tool_call in tool_calls:
+    name = tool_call["function"]["name"]
+    if tool_call_count.get(name, 0) >= 2:
+        result = "[工具错误] 该工具已连续失败 2 次，放弃重试"
+    else:
+        try:
+            result = execute_tool(name, arguments)
+        except Exception as e:
+            tool_call_count[name] = tool_call_count.get(name, 0) + 1
+            result = f"[工具错误] {e}"
+    messages.append(build_tool_result(tool_call["id"], result))
+```
 
 对应能力项：B2、D5（成本/容错意识）
