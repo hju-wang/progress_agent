@@ -39,3 +39,28 @@ python3 training/day1-mini-agent/agent.py
 
 - 默认是 **离线 mock 模式**：不联网、不需要 API Key，适合学循环逻辑。
 - 如果你有 DeepSeek API Key，运行前 `export DEEPSEEK_API_KEY=你的key`，同一份代码会直接调用真实模型（可自行对比差异）。
+
+---
+
+## Day 1 总结（2026-09-08）✅
+
+### 本次学会/验证的能力
+
+- **TODO-1（改错）**：工具结果消息的 `role` 必须为 `"tool"`，不是 `"assistant"`。已自行发现并改正。
+- **TODO-2（加工具）**：新增 `get_current_date` 工具。过程中暴露两个典型 bug 并已修复：
+  - 第二个工具被插进第一个工具字典内部 → 正确结构是 `TOOLS = [工具1, 工具2]`；
+  - `datetime.datetime.now.strftime(...)` 缺少 `()` → 改为 `datetime.datetime.now().strftime(...)`。
+- **复述（三问）**：
+  1. 消息角色有 `system / user / assistant / tool`；模型靠 `role` 区分消息来源。
+  2. Agent 停止靠双机制：模型不再返回 `tool_calls` 时正常结束；轮数用完则 `RuntimeError` 兜底。
+  3. 拿到 `tool_calls` 后：执行工具 → 组装带 `tool_call_id` 的结果消息 → 追加回 messages → 再发给模型。
+
+### 需要加强的地方
+
+- “tools 字段”的准确表述：是**应用把可用工具告诉模型**，不是“模型注册工具”。
+- 代码格式：缩进和多行结构需要养成规范（第二个工具的缩进曾乱过）。
+- 对“循环为什么不会失控”的理解刚开始建立，Day 2 会再次用到。
+
+### 下一步
+
+- [Day 2：错误恢复](../day2-error-recovery/README.md)（进行中）——让工具报错时 Agent 不崩、会自救。

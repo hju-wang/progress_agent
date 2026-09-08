@@ -9,7 +9,7 @@
 
 ## Day 1：工具调用循环（已通过）
 
-- [mini-agent](day1-mini-agent/README.md)：用户提问 → 工具调用 → 结果回填 → 最终回答。
+- [mini-agent + Day 1 总结](day1-mini-agent/README.md)：用户提问 → 工具调用 → 结果回填 → 最终回答。
 
 ## Day 2：错误恢复（进行中）
 
