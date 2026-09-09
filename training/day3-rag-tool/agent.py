@@ -176,12 +176,11 @@ CHUNKS = build_chunks()
 def score_chunk(question_tokens: list[str], chunk_tokens: list[str]) -> int:
     """返回资料块与问题的相关度：question 的 token 有多少个也出现在资料块里。"""
 
-    # TODO-3：实现打分逻辑（一到两行即可）
-    # 要求：共同 token 越多得分越高；完全没有共同 token 时返回 0。
-    # 提示：chunk_tokens 是否包含某个 token 用 `in` 判断。
-    raise NotImplementedError(
-        "TODO-3 还没实现：请先写 score_chunk，让知识类问题能检索到资料。"
-    )
+    score = 0
+    for token in question_tokens:
+        if token in chunk_tokens:
+            score += 1
+    return score
 
 
 def retrieve(question: str, k: int = 2) -> list[dict]:
