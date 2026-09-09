@@ -4,18 +4,23 @@
 
 > 总地图与阶段说明见 [plans/README.md](../plans/README.md)。
 
-## 当前状态（2026-09-08）
+## 当前状态（2026-09-09）
 
 - Day 1（工具调用循环）：✅ 已完成
 - Day 2（错误恢复）：✅ 已完成，总结已写入 [day2-error-recovery/README.md](day2-error-recovery/README.md)
-- Day 3（RAG 检索工具）：⬜ 待开始（尚无 `training/day3-*` 目录）
+- Day 3（RAG 检索工具）：🔄 进行中，练习在 [day3-rag-tool/](day3-rag-tool/)
 
 ## 接下来要做什么
 
-1. 先按 [2026-W37 周计划](../plans/2026-W37-第一周-最小Agent循环.md) 创建 `training/day3-rag-tool/` 脚手架（可运行示例 + TODO + 验证命令 + 验收卷），再让用户开跑。
-2. Day 3 目标：把 RAG 做成“检索工具”接进 Agent——复用 Day 1/2 的工具循环，新增检索类工具，让模型在需要资料时调用它。
-3. 用户完成任务并运行验证后作答 Day 3 验收卷。
-4. 教练批改 + review 通过后：总结进当天 README → 更新本文件指向 Day 4 → `git commit`。
+1. 让用户实现 `training/day3-rag-tool/agent.py` 里 `score_chunk`（TODO-3）：
+   统计问题 token 与资料块 token 的共同数量，无共同 token 返回 0。
+2. 用户运行验证：
+   - `python3 training/day3-rag-tool/agent.py "RAG 的流程是什么？"`（应命中 `doc-2-1` 并基于资料作答）
+   - `python3 training/day3-rag-tool/agent.py "工具调用时有哪些消息角色？"`（应命中 `doc-1-1`）
+   - `python3 training/day3-rag-tool/agent.py "今天是几号？"`（Day 1/2 功能不坏）
+3. 用户口头复述三问（检索结果为何 role=tool 回填 / 0 命中怎么办 / 玩具索引在大规模下哪里崩）。
+4. 用户作答 [Day 3 验收卷](../assessments/papers/day3-rag-tool-验收卷-v0.1.md)。
+5. 教练批改 + review 通过后：总结进 `day3-rag-tool/README.md` → 更新本文件指向 Day 4 → `git commit`。
 
 ## 遗留提示（诚实记录）
 

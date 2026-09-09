@@ -1,0 +1,71 @@
+{
+  "schema": "progress-agent/exam-paper",
+  "id": "paper-day3-rag-tool-v0.1",
+  "title": "Day 3 RAG 检索工具 · 验收卷",
+  "version": "0.1",
+  "created": "2026-09-09",
+  "grader": "coach",
+  "pass_condition": "Q1-Q3 全对；Q4 输出符合验收；Q5 能讲清打分原理并给出至少一个改进方向",
+  "instructions": [
+    "先完成 Day 3 代码任务（TODO-3）并运行通过，再作答本卷。",
+    "闭卷；允许看自己的代码与运行命令；不许问 AI 要答案。"
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "ability_ids": ["A5"],
+      "type": "single_choice",
+      "points": 1,
+      "prompt": "RAG（检索增强生成）的正确流程是？",
+      "options": {
+        "A": "先分块建索引 → 按问题检索资料块 → 资料入上下文让模型作答",
+        "B": "先让模型直接回答，再用检索结果改写",
+        "C": "不分块，全部文档原文一次性塞进上下文"
+      },
+      "answer": "A",
+      "explanation": "RAG 是先把文档切块建索引，再按问题检索最相关块，最后把资料放进上下文供模型作答。"
+    },
+    {
+      "id": "Q2",
+      "ability_ids": ["A4", "A5"],
+      "type": "single_choice",
+      "points": 1,
+      "prompt": "search_knowledge 的检索结果回填给模型时，正确做法是？",
+      "options": {
+        "A": "和其他工具一样：role=tool，带对应 tool_call_id",
+        "B": "检索结果特殊，role 用 retrieval",
+        "C": "检索结果不需要回填"
+      },
+      "answer": "A",
+      "explanation": "检索工具就是普通工具的一种；assistant 发出 tool_calls 后，每条结果都必须以 role=tool 并带 tool_call_id 回填。"
+    },
+    {
+      "id": "Q3",
+      "ability_ids": ["A5", "E6"],
+      "type": "single_choice",
+      "points": 1,
+      "prompt": "知识库里没有与问题匹配的资料（0 命中）时，Agent 应该？",
+      "options": {
+        "A": "如实告诉用户知识库没覆盖，承认不知道",
+        "B": "根据已有资料推测最合理答案",
+        "C": "换相关话题回答"
+      },
+      "answer": "A",
+      "explanation": "检索为空时应承认资料不足；编造或强行推测正是 RAG 要防的幻觉。"
+    },
+    {
+      "id": "Q4",
+      "ability_ids": ["A5", "B1", "E6"],
+      "type": "task",
+      "prompt": "贴出三个命令的真实运行输出（RAG 流程 / 消息角色 / 日期）。",
+      "acceptance": "前两段调用 search_knowledge、命中 doc-2-1/doc-1-1、无 TODO-3 报错、回答基于资料且带来源；第三段日期正常。"
+    },
+    {
+      "id": "Q5",
+      "ability_ids": ["A5", "B2", "D5"],
+      "type": "short_answer",
+      "prompt": "讲清 score_chunk 的打分原理；并为真实规模知识库选一个改进方向说明其解决的问题。",
+      "acceptance": "能讲共同 token 计数与无关问题得分低的原因；能选一个改进方向（向量/BM25/rerank/分词/分块/索引更新等）并说明价值。"
+    }
+  ]
+}

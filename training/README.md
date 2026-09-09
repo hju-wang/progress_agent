@@ -15,6 +15,6 @@
 
 - [README + Day 2 总结](day2-error-recovery/README.md)：工具报错时 Agent 不崩、会自救。
 
-## Day 3：RAG 检索工具（待开始）
+## Day 3：RAG 检索工具（进行中）
 
-- 目标：把 RAG 做成“检索工具”接进 Agent；脚手架待创建。
+- [README](day3-rag-tool/README.md)：把 RAG 做成“检索工具”接进 Agent。
