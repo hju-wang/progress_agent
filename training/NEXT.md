@@ -9,14 +9,17 @@
 - Day 1（工具调用循环）：✅ 已完成
 - Day 2（错误恢复）：✅ 已完成
 - Day 3（RAG 检索工具）：✅ 已完成，总结已写入 [day3-rag-tool/README.md](day3-rag-tool/README.md)
-- Day 4（LangGraph 对照）：⬜ 待开始（尚无 `training/day4-*` 目录）
+- Day 4（LangGraph 对照）：🔄 脚手架已就绪，待完成
 
 ## 接下来要做什么
 
-1. 先按 [2026-W37 周计划](../plans/2026-W37-第一周-最小Agent循环.md) 创建 `training/day4-langgraph/` 脚手架（可运行示例 + TODO + 验证命令 + 验收卷），再让用户开跑。
-2. Day 4 目标：用 LangGraph 对照实现 Day 1/2/3 同一个 Agent 循环（状态 + 工具节点 + 错误回填），能讲清“框架替你做了什么、你还得自己做什么”。
-3. 用户完成任务并运行验证后作答 Day 4 验收卷。
-4. 教练批改 + review 通过后：总结进当天 README → 更新本文件指向 Day 5 → `git commit`。
+1. 安装依赖并阅读 [day4-langgraph/README.md](day4-langgraph/README.md)：
+   `cd training/day4-langgraph && python3 -m venv .venv && .venv/bin/python -m pip install "langgraph>=0.2"`。
+2. 用户完成 3 个不同知识点的 TODO：TODO-1 节点返回与状态更新 → TODO-2 工具节点执行与错误回填 → TODO-3 条件路由（继续 / 终止）。
+3. 运行验证两个命令（日期正常；天气错误优雅收场），全部通过后等教练发放 Day 4 验收卷。
+4. 批改 + review 通过后：总结进当天 README → 更新本文件指向 Day 5 → 提交。
+
+> 新规则：每个 Day 含 2–3 个 TODO，每个 TODO 必须对应不同知识点，不允许同知识点重复凑数。
 
 ## 遗留提示（诚实记录）
 
