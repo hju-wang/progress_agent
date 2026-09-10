@@ -42,14 +42,47 @@ class RunAgentTests(unittest.TestCase):
     #         content 以 "[工具错误]" 开头；
     #         最后一条 assistant 消息是诚实的收尾（不是编造天气）。
     def test_tool_error_is_fed_back_as_tool_message(self) -> None:
-        raise NotImplementedError("TODO-3：按上面的提示补这个测试")
+        message = agent.run_agent("上海天气怎么样",llm=agent._mock_llm)
+        
+        tool_messsages = [m for m in message if m["role"]=="tool"]
+        self.assertGreaterEqual(len(tool_messsages),1)
+        self.assertEqual(tool_messsages[0]["tool_call_id"],"call_weather")
+        self.assertTrue(tool_messsages[0]["content"].startswith("[工具错误]"))
+        
+        last_message = message[-1]
+        
+        self.assertEqual(last_message["role"],"assistant")
+        self.assertIn(last_message["content"],"无法")
+        self.assertNotIn(last_message["content"],"晴天")
+        
+        
+        
+        
+        
+        
+    
+        
+        
 
     # 测试 2：日期问题能走完循环并给出最终回答
     #   messages = agent.run_agent("今天是几号？", llm=agent._mock_llm)
     #   断言：最后一条消息 role == "assistant" 且有 content；
     #         最终回答基于工具结果（包含上一次工具返回的日期）。
     def test_date_question_returns_final_answer(self) -> None:
-        raise NotImplementedError("TODO-3：按上面的提示补这个测试")
+         # 先拿到工具返回的日期，后面用它来证明“回答基于工具结果”
+        tool_messages = [m for m in messages if m["role"] == "tool"]
+        self.assertEqual(len(tool_messages), 1)
+        date_result = tool_messages[0]["content"]
+
+        # 最后一条消息：assistant，且 content 是非空字符串
+        last = messages[-1]
+        self.assertEqual(last["role"], "assistant")
+        self.assertIsInstance(last["content"], str)
+        self.assertTrue(last["content"], "最终回答不能为空")
+
+        # 最终回答包含工具返回的日期 → 说明答案来自工具结果
+        self.assertIn(date_result, last["content"])
+        
 
 
 if __name__ == "__main__":

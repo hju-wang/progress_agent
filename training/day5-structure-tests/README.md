@@ -46,6 +46,8 @@ python3 -c "import agent; print(sorted(agent.TOOL_HANDLERS))"
 
 想清楚一个问题：以后新增一个工具，用注册表要改几处？用 if/elif 又要改几处？
 
+用注册表 和 用分支改的改动数量不是一样的吗，只不过是把分支抽象成注册表了
+
 ## TODO-2：依赖注入 + 返回消息（可测试性）
 
 现在 `run_agent` 写死了 `call_llm`，而且只 `print`、不返回，测试没法断言。
@@ -55,8 +57,9 @@ python3 -c "import agent; print(sorted(agent.TOOL_HANDLERS))"
 3. 正常结束时 `return messages`；
 4. 命令行行为不变：直接运行仍然只打印，不多输出一行。
 
-为什么这样改就能“离不开网络也能测”？想清楚再往下写测试。
+为什么这样改就能做到“不联网也能测”（离线、确定性）？想清楚再往下写测试。
 
+答： 因为使用的是 _mock_llm 注入，所以不用 联网也能测试
 ## TODO-3：两个单元测试（测试）
 
 打开 [tests/test_agent.py](tests/test_agent.py)，照示例测试的写法补两个：
@@ -89,12 +92,64 @@ python3 -m unittest discover -s tests -v
 
 在本 README 末尾自己加一节 `## 运行与测试`，用几行写清：怎么跑、怎么测、
 结构是什么（哪个函数负责什么）。标准是“没看过代码的人照着能跑起来”。
+答：这个题目你自己写答案吧
 
 ## 自检（合上代码答，写在回复里）
 
 1. 用注册表替代 if/elif，除了“少写分支”，对**新增工具**和**测试**分别有什么好处？
+   答：对新增工具就是代码更清晰了，对测试的好处，我不知道
 2. 为什么测试要注入 `llm`？`run_agent` 返回 `messages` 解决了什么问题？
+   答：不注入llm 没办法模拟模型的返回，返回message 是为了测试行为契约
 3. 这两个测试测的是“行为契约”还是“实现细节”？把 `execute_tool` 从 if/elif 换回注册表，
    测试为什么仍然应该通过？
+   答：是行为测试，知识代码结构变了，逻辑没变
 
 代码 + 测试 + README 通过后，我会按新规则出一张**满分 100**的 Day 5 验收卷。
+
+---
+
+## 运行与测试
+
+> 说明：本节由教练按用户要求代写；建议你读完后用自己的话重写一遍。
+
+### 环境
+
+纯 Python 标准库，Python 3.12+（本仓库开发环境为 3.14），不需要 API Key。
+不设置 `DEEPSEEK_API_KEY` 时，`call_llm` 自动使用离线 mock，不联网。
+
+### 运行
+
+```bash
+cd /Users/wangfang/progress_agent/training/day5-structure-tests
+python3 agent.py "今天是几号？"
+python3 agent.py "上海天气怎么样？"
+```
+
+- 日期问题：`[工具] get_current_date` → `[最终回答] 基于工具结果的日期`；
+- 天气问题：`[工具] get_weather` → `[结果] [工具错误] ...` → 诚实的“无法获取/稍后再试”；
+- 若已 `export DEEPSEEK_API_KEY=...`，同一份代码会走真实模型，输出风格不同但流程一致。
+
+### 测试
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+三个用例应全部通过，且离线、不需要 API Key：
+
+1. 未知工具抛 `ValueError`；
+2. 工具报错以 `role="tool"` 回填，`tool_call_id` 保留，内容以 `[工具错误]` 开头；
+3. 日期问题能走完循环，最终回答基于工具结果。
+
+### 结构（谁负责什么）
+
+| 位置 | 职责 |
+| --- | --- |
+| `TOOLS` | 给模型看的工具 schema（名称、描述、参数） |
+| `get_current_time` / `get_current_date` / `get_weather` | 工具实现：接收 args 字典，返回字符串；weather 固定抛错，模拟不稳定第三方服务 |
+| `TOOL_HANDLERS` | 工具名 → 实现的注册表，`execute_tool` 的查表来源 |
+| `execute_tool` | 查表分发；未知工具抛 `ValueError` |
+| `call_llm` | 选择真实 DeepSeek 或离线 mock |
+| `_mock_llm` | 确定性的离线假模型（供离线运行与测试） |
+| `build_tool_result` | 构造 `role="tool"` 的工具结果消息 |
+| `run_agent` | Agent 主循环：可注入 `llm`，正常结束时返回 `messages` |
