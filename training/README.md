@@ -26,6 +26,7 @@
   含 3 个不同知识点的 TODO（节点状态 / 工具节点 / 条件路由），验收卷 91/100。
 - [debug_stream.py](day4-langgraph/debug_stream.py)：用 `stream_mode="updates"` 观察每步状态更新。
 
-## Day 5：收尾（待开始）
+## Day 5：工程化收尾（进行中）
 
-- 目标：整理 `training/` 代码结构、补测试、写清楚 README；脚手架/任务待创建。
+- [README + 脚手架](day5-structure-tests/README.md)：工具注册表（结构）、依赖注入（可测试性）、两个单元测试；
+  含 [tests/test_agent.py](day5-structure-tests/tests/test_agent.py) 与"运行与测试" README 交付物。
