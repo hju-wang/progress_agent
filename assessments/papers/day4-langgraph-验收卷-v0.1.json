@@ -1,0 +1,71 @@
+{
+  "schema": "progress-agent/exam-paper",
+  "id": "paper-day4-langgraph-v0.1",
+  "title": "Day 4 LangGraph 对照 · 验收卷",
+  "version": "0.1",
+  "created": "2026-09-10",
+  "grader": "coach",
+  "pass_condition": "Q1-Q3 全对；Q4 能指出键名错误、症状与定位方法；Q5 对照表正确且能说清框架边界",
+  "instructions": [
+    "先完成 Day 4 三个 TODO 并运行通过，再作答本卷。",
+    "闭卷；允许看自己的代码与运行命令；不许问 AI 要答案。"
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "ability_ids": ["B1", "E1"],
+      "type": "single_choice",
+      "points": 1,
+      "prompt": "LangGraph 里一个节点函数的返回值，正确要求是？",
+      "options": {
+        "A": "返回状态更新字典，键必须是状态 schema 里定义的字段",
+        "B": "直接修改模块级全局变量",
+        "C": "返回字符串，框架自动塞进状态"
+      },
+      "answer": "A",
+      "explanation": "节点只产出状态更新，由框架合并；未知键在部分版本会被静默忽略，导致状态不更新。"
+    },
+    {
+      "id": "Q2",
+      "ability_ids": ["B1", "A4"],
+      "type": "single_choice",
+      "points": 1,
+      "prompt": "条件路由返回 end 对应手写循环里的哪一步？",
+      "options": {
+        "A": "if not tool_calls 时打印最终回答并 return",
+        "B": "执行工具",
+        "C": "append assistant 消息"
+      },
+      "answer": "A",
+      "explanation": "条件边把“是否继续”的判断从手写循环里抽离出来：end 即结束循环，continue 即进入下一轮工具执行。"
+    },
+    {
+      "id": "Q3",
+      "ability_ids": ["B2", "B1"],
+      "type": "single_choice",
+      "points": 1,
+      "prompt": "tools_node 执行了工具但不回填 role=tool 结果，会发生什么？",
+      "options": {
+        "A": "状态不变，条件边永远返回 continue，tools→agent 死循环直到触发 recursion limit 报错",
+        "B": "图正常走到 END，只是少一句回答",
+        "C": "模型自动改用 user 消息继续"
+      },
+      "answer": "A",
+      "explanation": "最后一条仍是带 tool_calls 的 assistant 消息 → 路由持续 continue → 同一工具被反复调用，最终 GraphRecursionError。"
+    },
+    {
+      "id": "Q4",
+      "ability_ids": ["E6", "B1"],
+      "type": "read_code",
+      "prompt": "agent_node 返回 {'message': new_messages}（状态字段是 messages）：说明现象、根因、定位方法与正确写法。",
+      "acceptance": "能说清：状态未更新→最后一条是 user 消息→路由 end→输出回显问题；不报错是因为未知键被静默忽略；定位方法如 stream_mode='updates' 观察节点更新为 None；正确键名为 messages。"
+    },
+    {
+      "id": "Q5",
+      "ability_ids": ["B1", "A4", "E6"],
+      "type": "short_answer",
+      "prompt": "对照手写循环与 LangGraph 版各环节，并说明框架替做了什么、自己还要做什么。",
+      "acceptance": "环节对应正确；能说出框架提供状态管理/条件边/流式与检查点（至少两项），自己负责节点逻辑与工具错误处理。"
+    }
+  ]
+}

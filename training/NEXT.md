@@ -16,7 +16,7 @@
 1. 安装依赖并阅读 [day4-langgraph/README.md](day4-langgraph/README.md)：
    `cd training/day4-langgraph && python3 -m venv .venv && .venv/bin/python -m pip install "langgraph>=0.2"`。
 2. 用户完成 3 个不同知识点的 TODO：TODO-1 节点返回与状态更新 → TODO-2 工具节点执行与错误回填 → TODO-3 条件路由（继续 / 终止）。
-3. 运行验证两个命令（日期正常；天气错误优雅收场），全部通过后等教练发放 Day 4 验收卷。
+3. 用户作答 [Day 4 验收卷](../assessments/papers/day4-langgraph-验收卷-v0.1.md)（已发放；代码与自检已通过）。
 4. 批改 + review 通过后：总结进当天 README → 更新本文件指向 Day 5 → 提交。
 
 > 新规则：每个 Day 含 2–3 个 TODO，每个 TODO 必须对应不同知识点，不允许同知识点重复凑数。
