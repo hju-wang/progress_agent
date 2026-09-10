@@ -184,9 +184,7 @@ def agent_node(state: AgentState) -> dict[str, Any]:
     # TODO-1（知识点：LangGraph 节点契约与状态更新）
     # LangGraph 规定：节点必须返回“状态字典”，格式为 {"messages": new_messages}。
     # 请把下面这行替换成正确的 return。
-    raise NotImplementedError(
-        "TODO-1 还没实现：节点需要返回 {'messages': new_messages}"
-    )
+    return {"messages": new_messages}
 
 
 def tools_node(state: AgentState) -> dict[str, Any]:
@@ -206,9 +204,13 @@ def tools_node(state: AgentState) -> dict[str, Any]:
         #   1. try: result = execute_tool(name, arguments)
         #   2. except Exception as error: result = f"[工具错误] {error}"
         #   3. messages.append(build_tool_result(tool_call["id"], result))
-        raise NotImplementedError(
-            "TODO-2 还没实现：执行工具并把结果以 role=tool 回填"
-        )
+
+        try:
+            result = execute_tool(name, arguments)
+        except Exception as e:
+            result = f"[工具错误] {e}"
+
+        messages.append(build_tool_result(tool_call["id"], result))
 
     return {"messages": messages}
 
@@ -220,9 +222,10 @@ def route_after_agent(state: AgentState) -> str:
 
     # TODO-3（知识点：条件边与终止）
     # 要求：last_message 里还有 tool_calls 时返回 "continue"，否则返回 "end"。
-    raise NotImplementedError(
-        "TODO-3 还没实现：根据最后一条消息决定返回 continue 还是 end"
-    )
+    tool_calls = last_message.get("tool_calls")
+    if tool_calls:
+        return "continue"
+    return "end"
 
 
 def build_graph():

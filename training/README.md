@@ -20,7 +20,12 @@
 
 - [README + Day 3 总结](day3-rag-tool/README.md)：把 RAG 做成“检索工具”接进 Agent。
 
-## Day 4：LangGraph 对照（待开始）
+## Day 4：LangGraph 对照（已通过）
 
-- [README + 脚手架](day4-langgraph/README.md)：用 LangGraph 对照实现工具循环；
-  含 3 个不同知识点的 TODO（节点状态 / 工具节点 / 条件路由）。
+- [README + Day 4 总结](day4-langgraph/README.md)：用 LangGraph 对照实现工具循环；
+  含 3 个不同知识点的 TODO（节点状态 / 工具节点 / 条件路由），验收卷 91/100。
+- [debug_stream.py](day4-langgraph/debug_stream.py)：用 `stream_mode="updates"` 观察每步状态更新。
+
+## Day 5：收尾（待开始）
+
+- 目标：整理 `training/` 代码结构、补测试、写清楚 README；脚手架/任务待创建。

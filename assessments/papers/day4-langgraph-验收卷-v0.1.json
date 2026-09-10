@@ -5,7 +5,9 @@
   "version": "0.1",
   "created": "2026-09-10",
   "grader": "coach",
-  "pass_condition": "Q1-Q3 全对；Q4 能指出键名错误、症状与定位方法；Q5 对照表正确且能说清框架边界",
+  "total_points": 100,
+  "pass_score": 80,
+  "pass_condition": "总分 >= 80；Q1-Q3 全对；Q4 能指出键名错误、症状与定位方法；Q5 对照表正确且能说清框架边界",
   "instructions": [
     "先完成 Day 4 三个 TODO 并运行通过，再作答本卷。",
     "闭卷；允许看自己的代码与运行命令；不许问 AI 要答案。"
@@ -15,7 +17,7 @@
       "id": "Q1",
       "ability_ids": ["B1", "E1"],
       "type": "single_choice",
-      "points": 1,
+      "points": 10,
       "prompt": "LangGraph 里一个节点函数的返回值，正确要求是？",
       "options": {
         "A": "返回状态更新字典，键必须是状态 schema 里定义的字段",
@@ -29,7 +31,7 @@
       "id": "Q2",
       "ability_ids": ["B1", "A4"],
       "type": "single_choice",
-      "points": 1,
+      "points": 10,
       "prompt": "条件路由返回 end 对应手写循环里的哪一步？",
       "options": {
         "A": "if not tool_calls 时打印最终回答并 return",
@@ -43,7 +45,7 @@
       "id": "Q3",
       "ability_ids": ["B2", "B1"],
       "type": "single_choice",
-      "points": 1,
+      "points": 15,
       "prompt": "tools_node 执行了工具但不回填 role=tool 结果，会发生什么？",
       "options": {
         "A": "状态不变，条件边永远返回 continue，tools→agent 死循环直到触发 recursion limit 报错",
@@ -57,6 +59,13 @@
       "id": "Q4",
       "ability_ids": ["E6", "B1"],
       "type": "read_code",
+      "points": 30,
+      "rubric": {
+        "现象": 6,
+        "根因与不报错原因": 12,
+        "定位方法": 8,
+        "正确写法": 4
+      },
       "prompt": "agent_node 返回 {'message': new_messages}（状态字段是 messages）：说明现象、根因、定位方法与正确写法。",
       "acceptance": "能说清：状态未更新→最后一条是 user 消息→路由 end→输出回显问题；不报错是因为未知键被静默忽略；定位方法如 stream_mode='updates' 观察节点更新为 None；正确键名为 messages。"
     },
@@ -64,6 +73,11 @@
       "id": "Q5",
       "ability_ids": ["B1", "A4", "E6"],
       "type": "short_answer",
+      "points": 35,
+      "rubric": {
+        "五环节对照表": 20,
+        "框架与自身职责边界": 15
+      },
       "prompt": "对照手写循环与 LangGraph 版各环节，并说明框架替做了什么、自己还要做什么。",
       "acceptance": "环节对应正确；能说出框架提供状态管理/条件边/流式与检查点（至少两项），自己负责节点逻辑与工具错误处理。"
     }

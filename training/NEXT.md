@@ -4,28 +4,32 @@
 
 > 总地图与阶段说明见 [plans/README.md](../plans/README.md)。
 
-## 当前状态（2026-09-09）
+## 当前状态（2026-09-10）
 
 - Day 1（工具调用循环）：✅ 已完成
 - Day 2（错误恢复）：✅ 已完成
-- Day 3（RAG 检索工具）：✅ 已完成，总结已写入 [day3-rag-tool/README.md](day3-rag-tool/README.md)
-- Day 4（LangGraph 对照）：🔄 脚手架已就绪，待完成
+- Day 3（RAG 检索工具）：✅ 已完成
+- Day 4（LangGraph 对照）：✅ 已完成，总结已写入 [day4-langgraph/README.md](day4-langgraph/README.md)
+- Day 5（收尾：代码结构 / 测试 / README）：⬜ 待开始
+
+## 评分规则（2026-09-10 起）
+
+- 每张试卷满分 100，题面标注每题分值；客观题对错二元，主观题按要点给分；通过线 80。
+- 每次批改输出：逐题得分 + 总分 + 是否通过 + 失分点；教练参考/代写内容必须标注为非独立作答。
+- 详见 [assessments/README.md](../assessments/README.md)。
 
 ## 接下来要做什么
 
-1. 安装依赖并阅读 [day4-langgraph/README.md](day4-langgraph/README.md)：
-   `cd training/day4-langgraph && python3 -m venv .venv && .venv/bin/python -m pip install "langgraph>=0.2"`。
-2. 用户完成 3 个不同知识点的 TODO：TODO-1 节点返回与状态更新 → TODO-2 工具节点执行与错误回填 → TODO-3 条件路由（继续 / 终止）。
-3. 用户作答 [Day 4 验收卷](../assessments/papers/day4-langgraph-验收卷-v0.1.md)（已发放；代码与自检已通过）。
-4. 批改 + review 通过后：总结进当天 README → 更新本文件指向 Day 5 → 提交。
-
-> 新规则：每个 Day 含 2–3 个 TODO，每个 TODO 必须对应不同知识点，不允许同知识点重复凑数。
+1. 先按 [2026-W37 周计划](../plans/2026-W37-第一周-最小Agent循环.md) 起草 Day 5 任务（整理代码结构、补测试、写 README），建议 2–3 个不同知识点 TODO，不新建重复练习。
+2. 用户完成任务并运行验证后，按新规则出一张满分 100 的 Day 5 验收卷。
+3. 批改 + review 通过后：总结进当天 README → 更新本文件指向 Day 6 → `git commit`。
 
 ## 遗留提示（诚实记录）
 
-- Day 2 试卷 Q5.2（坏工具限流）为教练提供参考答案，用户**非独立完成**，D5 暂不记为已掌握。
-- Day 3 的三道口头复述未在对话中作答（用户选择直接收尾），概念由验收卷覆盖；Day 6 独立检验需抽查“检索工具 role=tool 回填 / 0 命中处理 / 索引升级方向”。
-- Day 6 独立检验需复测“同一坏工具重试不超过 2 次”的容错设计。
+- Day 2 试卷 Q5.2（坏工具限流）为教练参考答案，用户非独立完成，D5 暂不记为已掌握。
+- Day 3 三道口头复述未作答（用户选择直接收尾），概念由验收卷覆盖。
+- Day 4 试卷得分 91/100；Q4.2、Q4.3 与 Q5 框架边界部分为教练参考后誊写，非完全独立；Q5 对照表“问模型 / 回填结果”两行不达标（15/20）。
+- Day 6 独立检验需复测：坏工具限流设计、RAG 工具 role=tool 回填与 0 命中处理、LangGraph 状态契约与条件边。
 
 ## 规则提醒
 
