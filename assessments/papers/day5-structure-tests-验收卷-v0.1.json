@@ -1,0 +1,92 @@
+{
+  "schema": "progress-agent/exam-paper",
+  "id": "paper-day5-structure-tests-v0.1",
+  "title": "Day 5 工程化收尾 · 验收卷",
+  "version": "0.1",
+  "created": "2026-09-10",
+  "grader": "coach",
+  "total_points": 100,
+  "pass_score": 80,
+  "pass_condition": "总分 >= 80；Q1-Q3 全对；Q4 能指出 None 调用缺陷与测试价值；Q5 两个测试可跑且断言有意义；Q6 文档三部分齐全且准确",
+  "instructions": [
+    "先完成 Day 5 三个 TODO 与 README 交付物，三个单元测试全绿，再作答本卷。",
+    "闭卷；允许看自己的代码与运行命令；不许问 AI 要答案。"
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "ability_ids": ["E1", "E4"],
+      "type": "single_choice",
+      "points": 10,
+      "prompt": "注册表替代 if/elif 的最关键收益？",
+      "options": {
+        "A": "扩展点变成数据：execute_tool 不用改，可遍历注册表做一致性测试、替换单个 handler",
+        "B": "运行速度更快",
+        "C": "需要写的工具实现变少"
+      },
+      "answer": "A",
+      "explanation": "注册表把扩展点从控制流变成数据；新增工具不改 execute_tool，且便于一致性与替换式测试。"
+    },
+    {
+      "id": "Q2",
+      "ability_ids": ["E4", "B2"],
+      "type": "single_choice",
+      "points": 10,
+      "prompt": "注入 llm 对测试的意义？",
+      "options": {
+        "A": "把外部交互边界变成可替换参数，可注入 mock，离线确定、无需 API Key",
+        "B": "提高真实模型准确率",
+        "C": "少写一层循环"
+      },
+      "answer": "A",
+      "explanation": "依赖注入消除隐藏外部依赖（环境变量/网络），测试用 mock 得到确定性与离线可跑。"
+    },
+    {
+      "id": "Q3",
+      "ability_ids": ["E4"],
+      "type": "single_choice",
+      "points": 10,
+      "prompt": "断言最终回答包含『无法』的正确写法？",
+      "options": {
+        "A": "self.assertIn(\"无法\", last_message[\"content\"])",
+        "B": "self.assertIn(last_message[\"content\"], \"无法\")",
+        "C": "self.assertEqual(\"无法\", last_message[\"content\"])"
+      },
+      "answer": "A",
+      "explanation": "assertIn(member, container) 语义是 member in container，短串在前。"
+    },
+    {
+      "id": "Q4",
+      "ability_ids": ["E4", "E6"],
+      "type": "read_code",
+      "points": 20,
+      "rubric": {
+        "现象与原因": 6,
+        "测试价值": 8,
+        "正确行为与改法方向": 6
+      },
+      "prompt": "tool = TOOL_HANDLERS.get(name); return tool(args) —— 未知工具会怎样？测试为什么能抓到？正确行为是什么？",
+      "acceptance": "指出 get 返回 None → None(args) 抛 TypeError；测试把契约固化成可执行断言，重构引入的边界回归立刻暴露；未知工具应 raise ValueError。"
+    },
+    {
+      "id": "Q5",
+      "ability_ids": ["E4", "E1"],
+      "type": "coding",
+      "points": 25,
+      "rubric": {
+        "纯函数日期测试": 12,
+        "注册表一致性测试 + 说明": 13
+      },
+      "prompt": "补两个测试：日期纯函数测试；TOOL_HANDLERS 与 TOOLS schema 名字一致性测试。并说明一致性测试的价值。",
+      "acceptance": "两个测试离线可跑且全绿；断言有意义（日期可解析、集合相等）；能说明新增工具自动被一致性测试覆盖。"
+    },
+    {
+      "id": "Q6",
+      "ability_ids": ["E4", "E1"],
+      "type": "documentation",
+      "points": 25,
+      "prompt": "用自己的话重写 README《运行与测试》一节：怎么跑、怎么测（三个测试各验证什么）、结构与职责、为什么能离线测。",
+      "acceptance": "四部分齐全准确；命令可直接执行；结构说明至少覆盖 3 个函数/模块；离线原因（注入 mock）说清；非照抄。"
+    }
+  ]
+}

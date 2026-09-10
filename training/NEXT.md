@@ -20,7 +20,7 @@
    - TODO-3（测试）：补 `tests/test_agent.py` 两个用例（错误回填契约、日期问答）。
 2. 交付物 4：在当天 README 末尾补一节《运行与测试》。
 3. 用户运行验证（注册表打印三个工具名；两条命令行行为不变；`python3 -m unittest discover -s tests -v` 三个测试全绿）。
-4. 教练出 **满分 100 分**的 Day 5 验收卷（题面标注每题分值），批改输出逐题得分 + 总分。
+4. 用户作答 [Day 5 验收卷](../assessments/papers/day5-structure-tests-验收卷-v0.1.md)（已发放：Q1 10 / Q2 10 / Q3 10 / Q4 20 / Q5 25 / Q6 25，满分 100，通过线 80）。
 5. 通过后：总结进当天 README → 更新本文件指向 Day 6 → `git commit`。
 
 ## 评分规则（2026-09-10 起）
