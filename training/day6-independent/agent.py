@@ -1,8 +1,9 @@
 """Day 6 独立检验：在工程化后的 Agent 上加“坏工具连续失败限流”。
 
-基线是 Day 5 的成品（注册表分发 + 依赖注入 + 5 个单元测试全绿）。
-你要独立完成的任务见同目录 README.md：同一工具连续失败不超过 2 次，
-超限后不再真正执行，而是回填一条说明“放弃重试”的 role="tool" 结果。
+基线代码已经写完、5 个单元测试全绿，**不需要再改其他地方**。
+你只需要在 `run_agent` 里实现唯一的一件事（见同目录 README.md）：
+同一工具连续失败不超过 2 次，超限后不再真正执行，而是回填一条说明
+“放弃重试”的 role="tool" 结果。
 
 规则：限时 90 分钟、少 AI（可看自己的代码和官方文档，不许问 AI 要答案）。
 """
@@ -75,15 +76,6 @@ def get_weather(args: dict[str, Any]) -> str:
     city = args.get("city", "未知城市")
     raise RuntimeError(f"天气服务暂时不可用（city={city}）")
 
-
-# TODO-1（知识点：Python 惯用法——用数据结构替代分支）
-# 要求：
-#   1. 新增一个模块级字典 TOOL_HANDLERS: dict[str, Callable[[dict[str, Any]], str]]，
-#      键是工具名，值是“接收 args、返回字符串”的函数；
-#   2. 让 execute_tool 只做“查表 + 调用”，未知工具 raise ValueError；
-#   3. 三个工具的行为必须和现在完全一致。
-# 自检：python3 -c "import agent; print(sorted(agent.TOOL_HANDLERS))"
-#       应输出 ['get_current_date', 'get_current_time', 'get_weather']
 
 TOOL_HANDLERS: dict[str, Callable[[dict[str, Any]], str]] = {
     "get_current_time": get_current_time,
@@ -196,13 +188,6 @@ def _mock_llm(messages: list[dict[str, Any]]) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-# TODO-2（知识点：依赖注入与可测试性）
-# 现在 run_agent 写死了 call_llm，而且只 print、不返回值，测试没法断言中间消息。
-# 要求：
-#   1. 签名改成 run_agent(question, llm=call_llm, max_attempts=4)；
-#   2. 循环里调 llm(...) 而不是 call_llm(...)；
-#   3. 正常结束（打印最终回答）时 return messages，让调用方能检查整段消息；
-#   4. 外部行为不变：命令行直接运行仍然只打印，不因为返回多了一行输出。
 def run_agent(
     question: str,
     llm: Callable[[list[dict[str, Any]]], dict[str, Any]] = call_llm,
@@ -236,12 +221,12 @@ def run_agent(
             arguments = json.loads(function.get("arguments") or "{}")
             print(f"[工具] {name}({arguments})")
 
-            # Day 6 TODO（独立完成）：
-            # 1. 统计每个工具的“连续失败次数”，要跨轮累计（放在轮次循环外面）；
-            # 2. 执行前先判断：该工具已连续失败满 2 次 → 不再执行 execute_tool，
-            #    直接构造以 "[工具错误]" 开头、说明“已重试 2 次，放弃重试”的结果；
-            # 3. 真正执行成功时把该工具的失败计数清零；
-            # 4. 无论执行还是放弃，都要用 build_tool_result 回填 role="tool" 消息。
+            # ===== Day 6 TODO：本次唯一要改的地方 =====
+            # 在这里实现“同一工具连续失败不超过 2 次”的限流（要求见 README.md）：
+            #   1. 连续失败计数要跨轮累计（计数器不能定义在轮次循环里面）；
+            #   2. 已失败满 2 次的工具不再调用 execute_tool，直接构造放弃重试的结果；
+            #   3. 真正执行成功一次，要把该工具的失败计数清零；
+            #   4. 无论执行还是放弃，都要用 build_tool_result 回填 role="tool" 消息。
             try:
                 result = execute_tool(name, arguments)
             except Exception as error:

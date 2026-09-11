@@ -1,6 +1,6 @@
-"""Day 6 独立检验的测试文件（基线来自 Day 5，5 个用例全绿）。
+"""Day 6 独立检验的测试文件：原有 5 个用例已经全绿，不需要动。
 
-运行（在 training/day5-structure-tests 目录下）：
+运行（在 training/day6-independent 目录下）：
 
     python3 -m unittest discover -s tests -v
 
@@ -29,19 +29,6 @@ class ExecuteToolTests(unittest.TestCase):
 
 
 class RunAgentTests(unittest.TestCase):
-    # TODO-3（知识点：用 unittest 测“行为契约”，不测实现细节）
-    # 依赖 TODO-2：run_agent 要能注入 llm，并返回 messages。
-    #
-    # 提示：
-    #   - 用 agent._mock_llm 作为注入的 llm，测试就不联网、结果确定；
-    #   - run_agent 会打印过程日志，测试里不用管，只断言返回的 messages。
-    #
-    # 测试 1：工具报错时，错误必须以 role="tool" 的消息回填
-    #   messages = agent.run_agent("上海天气怎么样？", llm=agent._mock_llm)
-    #   断言：存在 role == "tool" 的消息；
-    #         tool_call_id 对应模型的调用 id；
-    #         content 以 "[工具错误]" 开头；
-    #         最后一条 assistant 消息是诚实的收尾（不是编造天气）。
     def test_tool_error_is_fed_back_as_tool_message(self) -> None:
         messages = agent.run_agent("上海天气怎么样？", llm=agent._mock_llm)
 
@@ -55,10 +42,6 @@ class RunAgentTests(unittest.TestCase):
         self.assertIn("无法", last_message["content"])
         self.assertNotIn("晴天", last_message["content"])
 
-    # 测试 2：日期问题能走完循环并给出最终回答
-    #   messages = agent.run_agent("今天是几号？", llm=agent._mock_llm)
-    #   断言：最后一条消息 role == "assistant" 且有 content；
-    #         最终回答基于工具结果（包含上一次工具返回的日期）。
     def test_date_question_returns_final_answer(self) -> None:
         messages = agent.run_agent("今天是几号？", llm=agent._mock_llm)
 
@@ -77,21 +60,35 @@ class RunAgentTests(unittest.TestCase):
         self.assertIn(date_result, last["content"])
 
 
-# 试卷中的测试
+# 基线测试：纯函数与注册表一致性（已完成，不需要改）
 
 class PracticeTests(unittest.TestCase):
-    #Q5 题目1 纯函数测试
+    # 纯函数测试：日期工具返回合法日期
     def test_exce_tool(self)-> None:
         tool_result =agent.execute_tool("get_current_date",{})
         date =agent.get_current_date({})
         self.assertEqual(tool_result,date)
 
-    #Q5 题目2 注册表一致性测试
+    # 注册表一致性测试：注册表键 == TOOLS schema 里的名字
     def test_reg(self):
-        # 使用两种方式取key
         handler_set = set(agent.TOOL_HANDLERS)
         handler_exp = { t["function"]["name"] for t in agent.TOOLS}
         self.assertEqual(handler_exp,handler_set)
+
+
+# ===== Day 6 TODO：在下面新增测试（至少两个）=====
+# 1) 同一工具连续失败满 2 次后进入“放弃重试”：
+#    断言恰好真正执行了 2 次，之后是放弃消息，且放弃消息仍以 role="tool" 回填、带原 tool_call_id。
+# 2) 成功一次会把失败计数清零（或你自己设计的等价边界）。
+# 提示：现有 _mock_llm 看到 [工具错误] 就收尾，触发不了连续失败，
+#       需要自己写一个“反复请求同一个工具”的假 llm。
+class Day6Tests(unittest.TestCase):
+    def test_gives_up_after_two_consecutive_failures(self) -> None:
+        raise NotImplementedError("Day 6 TODO：补这个测试")
+
+    def test_success_resets_failure_counter(self) -> None:
+        raise NotImplementedError("Day 6 TODO：补这个测试")
+
 
 if __name__ == "__main__":
     unittest.main()
