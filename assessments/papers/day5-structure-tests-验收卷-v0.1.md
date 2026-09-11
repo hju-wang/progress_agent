@@ -63,6 +63,12 @@ return tool(args)
 
 答：
 
+**（教练代填，非独立作答、不计分）**
+
+1. `TOOL_HANDLERS.get("no_such_tool")` 返回 `None`；下一行 `return tool(args)` 变成用 `None` 去调用，抛 `TypeError: 'NoneType' object is not callable`。原因：`dict.get` 查不到键时不报错、也不改字典，只返回默认值 `None`，而调用方没有判空。
+2. `test_unknown_tool_raises` 用 `assertRaises(ValueError)` 把“未知工具必须抛 `ValueError`”固化成可执行断言。当前实现抛的是 `TypeError`，错误类型不符，测试立刻失败。价值：把口头约定变成断言，重构/改动引入的行为回归（这里就是注册表重构时丢掉了原来的 `raise ValueError`）马上暴露，不必等线上或人工发现。
+3. 未知工具时应主动抛出约定好的 `ValueError`，让调用方能预期地捕获处理。改法方向：查表后若拿到 `None` 就 `raise ValueError(...)`，或改用下标访问 + `try/except KeyError`。
+
 ---
 
 **Q5（写测试，25 分）** 在 `tests/test_agent.py` 里补两个测试（可新建测试类），写完贴出代码：
@@ -97,6 +103,20 @@ class PracticeTests(unittest.TestCase):
 
 因为 agent.TOOLS 是发送给LLM的，而注册表中是真正要执行的，要保证LLM返回tool_call 的时候，其中的函数名，真正的在注册表中存在
 
+**（教练代填的 Q5.1 补强，非独立作答、不计分）**
+
+```python
+import datetime
+
+    def test_get_current_date_is_valid_iso_date(self) -> None:
+        result = agent.execute_tool("get_current_date", {})
+        self.assertIsInstance(result, str)
+        datetime.date.fromisoformat(result)  # 解析失败即抛 ValueError，测试变红
+        self.assertEqual(result, agent.get_current_date({}))
+```
+
+说明：`date.fromisoformat` 独立校验“格式是合法日期”，不再只靠两次调用互相比较。注意与 `agent.get_current_date({})` 比较在跨零点时有极小概率差一天，严格做法是断言它与 `datetime.date.today().isoformat()` 或 `agent.get_current_date({})` 之一相符。
+
 ---
 
 **Q6（文档，25 分）** 用自己的话重写 `training/day5-structure-tests/README.md` 的《运行与测试》一节（教练代写版可以不看）：
@@ -118,6 +138,24 @@ python3 agent.py "今天是几号？"
 python3 agent.py "上海天气怎么样？"
 ```
 2:`python3 -m unittest discover -s tests -v`
+
+**（教练代填的第 2/3/4 部分，非独立作答、不计分）**
+
+2. 怎么测：`python3 -m unittest discover -s tests -v`。当前 5 个用例：
+   - `test_unknown_tool_raises`：未知工具抛 `ValueError`；
+   - `test_tool_error_is_fed_back_as_tool_message`：工具报错以 `role="tool"` 回填、`tool_call_id` 不丢、内容以 `[工具错误]` 开头、最终回答诚实；
+   - `test_date_question_returns_final_answer`：日期问题走完循环，最终回答基于工具结果；
+   - `test_exce_tool`（试卷 Q5.1）：`execute_tool("get_current_date", {})` 返回合法日期且与 `get_current_date` 一致；
+   - `test_reg`（试卷 Q5.2）：`TOOL_HANDLERS` 与 `TOOLS` 的工具名集合一致。
+
+3. 结构与职责：
+   - `TOOL_HANDLERS`：工具名 → 实现函数的注册表；
+   - `execute_tool`：查表分发，未知工具抛 `ValueError`；
+   - `call_llm` / `_mock_llm`：选择真实模型或离线假模型；
+   - `build_tool_result`：构造 `role="tool"` 的工具结果消息；
+   - `run_agent`：Agent 主循环，可注入 `llm`，正常结束时返回 `messages`。
+
+4. 为什么这套测试“不联网也能测”：`run_agent` 把 `llm` 作为参数（依赖注入/接缝），测试传入 `_mock_llm`，整条链路不会发起 HTTP 请求，也不受 `DEEPSEEK_API_KEY` 影响，因此确定、快、无需联网。
 
 ---
 
@@ -145,3 +183,9 @@ python3 agent.py "上海天气怎么样？"
 3. Q6 补齐第 2/3/4 部分（三个测试各验证什么、结构与职责、离线原因）。
 
 诚实记录：Q5 测试为用户独立编写；本卷 Q1–Q3 独立完成，Q1–Q3 满分。
+
+**教练代填说明 v2（2026-09-11）**
+
+- Q4 三问、Q5.1 补强、Q6 第 2–4 部分为教练代填参考答案，**非独立作答、不计分**。
+- 独立得分仍为 **64/100**；Day 5 记录为“已跳过（未通过）”，允许进入 Day 6。
+- 可随时补考失分题（Q4 / Q5.1 补强 / Q6），≥80 即通过，结果覆盖以上记录。
