@@ -153,3 +153,36 @@ python3 -m unittest discover -s tests -v
 | `_mock_llm` | 确定性的离线假模型（供离线运行与测试） |
 | `build_tool_result` | 构造 `role="tool"` 的工具结果消息 |
 | `run_agent` | Agent 主循环：可注入 `llm`，正常结束时返回 `messages` |
+
+---
+
+## Day 5 总结（2026-09-11）⛔ 验收未通过（64/100）
+
+### 完成情况
+
+- 代码三个 TODO 全部完成并通过验证：
+  - TODO-1：`TOOL_HANDLERS` 注册表分发；未知工具 `raise ValueError`；
+  - TODO-2：`run_agent(question, llm=call_llm, ...)` 注入 llm、返回 `messages`；
+  - TODO-3：三个单元测试全绿（离线、无需 API Key）。
+- 验收卷得分 **64/100（通过线 80）**，未通过：
+  - Q1–Q3 满分（30/30）；
+  - Q4 得 3/20：讲不清 `dict.get` 返回 `None` → `TypeError` 的现象/根因、测试价值、未知工具的正确行为；
+  - Q5 得 23/25：两个测试可跑，但日期测试缺独立格式校验（未用 `date.fromisoformat`）；
+  - Q6 得 8/25：README《运行与测试》一节为教练代写，用户未独立完成“三个测试各验证什么 / 结构职责 / 离线原因”。
+- 用户选择不再补考，Day 5 以未通过状态收尾。
+
+### 学会/巩固的点
+
+- 注册表替代分支：扩展点从控制流变成数据，`execute_tool` 不用再改，可遍历做一致性测试、可替换单个 handler。
+- 依赖注入：把外部边界（llm）变成参数，测试注入 mock → 离线、确定、不需要 API Key；返回 `messages` 让行为契约可断言。
+- 测试的价值：把契约写成可执行断言，重构引入的回归会立刻暴露（未知工具从 `ValueError` 退化成 `None(args)` 抛 `TypeError` 就是一例）。
+- 单元测试基础：`assertIn(member, container)` 方向、纯函数测试、注册表与 `TOOLS` schema 一致性测试。
+
+### 诚实记录
+
+- E1（Python 惯用法）、E4（测试）**暂不记为达到 2 档**：代码能跑，但“能讲清”这一条未达标。
+- Day 5 卷可随时补考（只做失分题，≥80 通过），补考结果会覆盖本记录。
+
+### 下一步
+
+- Day 6 独立检验：除 W37 原定内容外，抽查 Day 5 三项——注册表分发、依赖注入/可测试性、unittest 断言方向。

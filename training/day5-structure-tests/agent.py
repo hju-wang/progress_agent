@@ -87,23 +87,17 @@ def get_weather(args: dict[str, Any]) -> str:
 
 TOOL_HANDLERS: dict[str, Callable[[dict[str, Any]], str]] = {
     "get_current_time": get_current_time,
-    "get_current_date":get_current_date,
-    "get_weather":get_weather
+    "get_current_date": get_current_date,
+    "get_weather": get_weather,
 }
 
 
 def execute_tool(name: str, args: dict[str, Any]) -> str:
     """执行工具并返回字符串结果。"""
 
-    # if name == "get_current_time":
-    #     return get_current_time(args)
-    # if name == "get_current_date":
-    #     return get_current_date(args)
-    # if name == "get_weather":
-    #     return get_weather(args)
-    # raise ValueError(f"未知工具：{name}")
-
     tool = TOOL_HANDLERS.get(name)
+    if tool is None:
+        raise ValueError(f"未知工具：{name}")
     return tool(args)
 
 
@@ -209,7 +203,11 @@ def _mock_llm(messages: list[dict[str, Any]]) -> dict[str, Any]:
 #   2. 循环里调 llm(...) 而不是 call_llm(...)；
 #   3. 正常结束（打印最终回答）时 return messages，让调用方能检查整段消息；
 #   4. 外部行为不变：命令行直接运行仍然只打印，不因为返回多了一行输出。
-def run_agent(question, llm=call_llm, max_attempts=4):
+def run_agent(
+    question: str,
+    llm: Callable[[list[dict[str, Any]]], dict[str, Any]] = call_llm,
+    max_attempts: int = 4,
+) -> list[dict[str, Any]]:
     messages: list[dict[str, Any]] = [
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": question},
@@ -217,7 +215,7 @@ def run_agent(question, llm=call_llm, max_attempts=4):
 
     for attempt in range(1, max_attempts + 1):
         print(f"\n--- 第 {attempt} 轮 ---")
-        message =llm(messages)
+        message = llm(messages)
 
         messages.append(
             {

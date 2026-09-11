@@ -4,24 +4,20 @@
 
 > 总地图与阶段说明见 [plans/README.md](../plans/README.md)。
 
-## 当前状态（2026-09-10）
+## 当前状态（2026-09-11）
 
 - Day 1（工具调用循环）：✅ 已完成
 - Day 2（错误恢复）：✅ 已完成
 - Day 3（RAG 检索工具）：✅ 已完成
 - Day 4（LangGraph 对照）：✅ 已完成（验收卷 91/100）
-- Day 5（工程化收尾）：🔄 进行中，练习在 [day5-structure-tests/](day5-structure-tests/)
+- Day 5（工程化收尾）：⛔ 已收尾，验收卷 64/100 未通过（用户选择不补考；代码与测试全绿）
+- Day 6（独立检验）：⬜ 待开始
 
 ## 接下来要做什么
 
-1. 用户完成 [day5-structure-tests/README.md](day5-structure-tests/README.md) 的 3 个 TODO：
-   - TODO-1（结构）：`TOOL_HANDLERS` 注册表 + 改造 `execute_tool`，不再用 if/elif；
-   - TODO-2（可测试性）：`run_agent(question, llm=call_llm, ...)` 注入 llm 并 `return messages`；
-   - TODO-3（测试）：补 `tests/test_agent.py` 两个用例（错误回填契约、日期问答）。
-2. 交付物 4：在当天 README 末尾补一节《运行与测试》。
-3. 用户运行验证（注册表打印三个工具名；两条命令行行为不变；`python3 -m unittest discover -s tests -v` 三个测试全绿）。
-4. 用户作答 [Day 5 验收卷](../assessments/papers/day5-structure-tests-验收卷-v0.1.md)（已发放：Q1 10 / Q2 10 / Q3 10 / Q4 20 / Q5 25 / Q6 25，满分 100，通过线 80）。
-5. 通过后：总结进当天 README → 更新本文件指向 Day 6 → `git commit`。
+1. 起草 Day 6 独立检验：限时、少 AI 帮助，完成一个小改动 + 测试；任务范围要覆盖 W37 原定内容，并抽查 Day 5 三项——注册表分发、依赖注入/可测试性、unittest 断言方向。
+2. 独立检验通过后：Day 7 周复盘（重跑自测 + 差距报告，决定下一周）。
+3. 可选项：用户若想补考 Day 5 卷（只做失分题，≥80 通过），补考结果覆盖未通过记录。
 
 ## 评分规则（2026-09-10 起）
 
@@ -34,7 +30,8 @@
 - Day 2 Q5.2（坏工具限流）为教练参考答案，非独立完成，D5 未记为掌握。
 - Day 3 三道口头复述未作答，概念由验收卷覆盖。
 - Day 4 得分 91/100；Q4.2、Q4.3 与 Q5 框架边界为教练参考后誊写，Q5 对照表 15/20。
-- Day 6 独立检验需复测：坏工具限流设计、RAG 工具 role=tool 回填与 0 命中处理、LangGraph 状态契约与条件边。
+- Day 5 得分 64/100 未通过；README《运行与测试》为教练代写；E1/E4 暂不记为达标。
+- Day 6 独立检验需复测：坏工具限流设计、RAG 工具 role=tool 回填与 0 命中处理、LangGraph 状态契约与条件边、注册表分发 / 依赖注入 / unittest 断言方向。
 
 ## 规则提醒
 

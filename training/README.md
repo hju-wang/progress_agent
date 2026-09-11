@@ -26,7 +26,7 @@
   含 3 个不同知识点的 TODO（节点状态 / 工具节点 / 条件路由），验收卷 91/100。
 - [debug_stream.py](day4-langgraph/debug_stream.py)：用 `stream_mode="updates"` 观察每步状态更新。
 
-## Day 5：工程化收尾（进行中）
+## Day 5：工程化收尾（已收尾，验收未通过 64/100）
 
-- [README + 脚手架](day5-structure-tests/README.md)：工具注册表（结构）、依赖注入（可测试性）、两个单元测试；
-  含 [tests/test_agent.py](day5-structure-tests/tests/test_agent.py) 与"运行与测试" README 交付物。
+- [README + Day 5 总结](day5-structure-tests/README.md)：代码/测试全绿，但验收卷 64/100（通过线 80），
+  E1/E4 暂不记为达标；可随时补考失分题。
