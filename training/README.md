@@ -30,3 +30,8 @@
 
 - [README + Day 5 总结](day5-structure-tests/README.md)：代码/测试全绿，但验收卷 64/100（通过线 80），
   E1/E4 暂不记为达标；可随时补考失分题。
+
+## Day 6：独立检验（进行中）
+
+- [README + 评分卡](day6-independent/README.md)：限时 90 分钟、少 AI，独立完成“坏工具连续失败 ≤2 次”的
+  容错改动 + 至少两个测试 + 设计说明；基线来自 Day 5（5 个测试全绿）。

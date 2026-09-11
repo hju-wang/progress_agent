@@ -1,0 +1,62 @@
+{
+  "schema": "progress-agent/exam-paper",
+  "id": "rubric-day6-independent-v0.1",
+  "title": "Day 6 独立检验 · 评分卡",
+  "version": "0.1",
+  "created": "2026-09-11",
+  "grader": "coach",
+  "type": "rubric",
+  "total_points": 100,
+  "pass_score": 80,
+  "pass_condition": "总分 >= 80；放弃路径与成功清零必须有测试覆盖；原有用例不回归",
+  "instructions": [
+    "限时 90 分钟，少 AI：可看自己的代码与官方文档，不许问 AI 要实现或测试代码。",
+    "交付：agent.py、tests/test_agent.py（新增>=2 用例）、README 设计说明。"
+  ],
+  "sections": [
+    {
+      "name": "功能正确性",
+      "points": 40,
+      "items": [
+        { "name": "连续失败计数跨轮累计", "points": 10 },
+        { "name": "满 2 次后不再执行，直接放弃回填", "points": 15 },
+        { "name": "成功清零", "points": 10 },
+        { "name": "放弃消息格式", "points": 5 }
+      ]
+    },
+    {
+      "name": "测试质量",
+      "points": 25,
+      "items": [
+        { "name": "新增用例数量（>=2）", "points": 5 },
+        { "name": "覆盖放弃路径（恰好 2 次真实执行）", "points": 10 },
+        { "name": "覆盖成功清零或等价边界", "points": 10 }
+      ]
+    },
+    {
+      "name": "回归与协议",
+      "points": 15,
+      "items": [
+        { "name": "原有 5 个测试仍全绿", "points": 5 },
+        { "name": "放弃仍回填 role=tool 且带 tool_call_id", "points": 5 },
+        { "name": "日期正常 / 未知工具仍 ValueError / 离线可跑", "points": 5 }
+      ]
+    },
+    {
+      "name": "设计说明",
+      "points": 10,
+      "items": [
+        { "name": "连续失败定义与清零", "points": 4 },
+        { "name": "放弃消息与为何仍要回填", "points": 3 },
+        { "name": "与 max_attempts 的区别", "points": 3 }
+      ]
+    },
+    {
+      "name": "独立完成度",
+      "points": 10,
+      "items": [
+        { "name": "限时内独立完成、未索要实现或测试代码", "points": 10 }
+      ]
+    }
+  ]
+}
