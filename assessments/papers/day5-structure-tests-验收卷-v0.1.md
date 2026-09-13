@@ -56,9 +56,10 @@ return tool(args)
    答：会抛出异常 TypeError: 'NoneType' object is not callable
    因为 TOOL_HANDLERS.get(name)查不到对应的key 值的时候会返回None,所以tool就变成了None，None 是不可被调用的
 2. （8 分）`test_unknown_tool_raises` 为什么能抓到这个缺陷？说明测试在这里的价值。
-   答：传进去一个为定义的工具名就会
+   答：test_unknown_tool_raises 断言的是 ValueError 这个契约，价值就是把未知工具抛 valueError 这种口头约定固化成可执行的断言
 3. （6 分）正确的行为应该是什么？用一句话说明改法方向（不用写代码）。
-   答：这个我不太懂是什么意思
+   答：主动抛出约定好的value Error 而不是让程序以一个Type Error 崩掉，
+      一句话说明，查表后取不到函数就 raise ValueError 
 对应能力项：E4、E6
 
 答：
@@ -88,9 +89,12 @@ return tool(args)
 class PracticeTests(unittest.TestCase):
     #Q5 题目1 纯函数测试
     def test_exce_tool(self)-> None:
-        tool_result =agent.execute_tool("get_current_date",{})
-        date =agent.get_current_date()
-        self.assertEqual(tool_result,date)
+         tool_result =agent.execute_tool("get_current_date",{})
+        date_result=datetime.date.fromisoformat(tool_result)
+        current_date =agent.get_current_date({})
+        date=datetime.date.fromisoformat(current_date)
+        self.assertEqual(date_result,date)
+
 
     #Q5 题目2 注册表一致性测试
     def test_reg(self):
@@ -189,3 +193,24 @@ python3 agent.py "上海天气怎么样？"
 - Q4 三问、Q5.1 补强、Q6 第 2–4 部分为教练代填参考答案，**非独立作答、不计分**。
 - 独立得分仍为 **64/100**；Day 5 记录为“已跳过（未通过）”，允许进入 Day 6。
 - 可随时补考失分题（Q4 / Q5.1 补强 / Q6），≥80 即通过，结果覆盖以上记录。
+
+**教练批改 v3（2026-09-13，补考）**
+
+| 题 | 分值 | v1 得分 | 补考得分 | 说明 |
+| --- | --- | --- | --- | --- |
+| Q1 | 10 | 10 | 10 | 正确。 |
+| Q2 | 10 | 10 | 10 | 正确。 |
+| Q3 | 10 | 10 | 10 | 正确。 |
+| Q4.1 | 6 | 2 | 6 | 已补全：点明 `TypeError: 'NoneType' object is not callable` 与 `dict.get` 返回 `None`。 |
+| Q4.2 | 8 | 1 | 6 | 答出“断言 ValueError 契约、把口头约定固化成可执行断言”；未展开“重构引入回归会立刻暴露”。 |
+| Q4.3 | 6 | 0 | 6 | 正确：主动抛 `ValueError`，查表取不到就 raise。 |
+| Q5.1 | 12 | 10 | 12 | 已用 `datetime.date.fromisoformat` 对两次结果分别解析后比较，格式校验到位；5 个测试仍全绿。 |
+| Q5.2 | 13 | 13 | 13 | 正确。 |
+| Q6 | 25 | 8 | 8 | 仍只写了怎么跑、怎么测；第 2–4 部分的完整内容为教练代填，**不计分**。 |
+
+**补考总分：81 / 100 → 通过（通过线 80）** ✅
+
+诚实记录：
+- Q4 三问的作答与卷面下方的教练代填参考高度一致，判定为**参考后重写、非完全独立**；计入分数，但不作为独立能力证据（Day 6 抽查复验）。
+- Q6 的 8 分全部来自用户自己写的命令部分；其余为教练代填，未计分。
+- 以 81 分压线通过，属于“补齐失分题后通过”，不代表 E1/E4 达到稳定 2 档；最终以 Day 6 独立检验为准。

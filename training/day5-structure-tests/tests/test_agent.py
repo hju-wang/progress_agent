@@ -12,6 +12,7 @@ from __future__ import annotations
 import sys
 import unittest
 from pathlib import Path
+import datetime
 
 # 让测试能 import 上一层的 agent.py（不引入打包/安装流程）
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -82,8 +83,10 @@ class PracticeTests(unittest.TestCase):
     #Q5 题目1 纯函数测试
     def test_exce_tool(self)-> None:
         tool_result =agent.execute_tool("get_current_date",{})
-        date =agent.get_current_date({})
-        self.assertEqual(tool_result,date)
+        date_result=datetime.date.fromisoformat(tool_result)
+        current_date =agent.get_current_date({})
+        date=datetime.date.fromisoformat(current_date)
+        self.assertEqual(date_result,date)
 
     #Q5 题目2 注册表一致性测试
     def test_reg(self):
