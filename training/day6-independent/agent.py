@@ -197,6 +197,8 @@ def run_agent(
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": question},
     ]
+    # 每个工具的连续失败次数；定义在轮次循环外，跨轮累计
+    tool_fail_count = {name: 0 for name in TOOL_HANDLERS}
 
     for attempt in range(1, max_attempts + 1):
         print(f"\n--- 第 {attempt} 轮 ---")
@@ -221,16 +223,20 @@ def run_agent(
             arguments = json.loads(function.get("arguments") or "{}")
             print(f"[工具] {name}({arguments})")
 
-            # ===== Day 6 TODO：本次唯一要改的地方 =====
-            # 在这里实现“同一工具连续失败不超过 2 次”的限流（要求见 README.md）：
-            #   1. 连续失败计数要跨轮累计（计数器不能定义在轮次循环里面）；
-            #   2. 已失败满 2 次的工具不再调用 execute_tool，直接构造放弃重试的结果；
-            #   3. 真正执行成功一次，要把该工具的失败计数清零；
-            #   4. 无论执行还是放弃，都要用 build_tool_result 回填 role="tool" 消息。
-            try:
-                result = execute_tool(name, arguments)
-            except Exception as error:
-                result = f"[工具错误] {error}"
+            fail_count = tool_fail_count.get(name, 0)
+            if fail_count < 2:
+                try:
+                    result = execute_tool(name, arguments)
+                    tool_fail_count[name] = 0
+                except Exception as error:
+                    tool_fail_count[name] += 1
+                    result = (
+                        f"[工具错误] {error}"
+                        f"（已连续失败 {tool_fail_count[name]} 次）"
+                    )
+            else:
+                result = f"[工具错误] 该工具已连续失败 2 次，放弃重试（tool={name}）"
+
             print(f"[结果] {result}")
 
             tool_result = build_tool_result(tool_call["id"], result)

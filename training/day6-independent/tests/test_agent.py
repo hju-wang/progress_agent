@@ -1,11 +1,11 @@
-"""Day 6 独立检验的测试文件：原有 5 个用例已经全绿，不需要动。
+"""Day 6 测试文件：原有 5 个用例 + 限流相关的 2 个用例。
 
 运行（在 training/day6-independent 目录下）：
 
     python3 -m unittest discover -s tests -v
 
-Day 6 任务：在这里新增至少两个测试，覆盖“连续失败限流”的行为契约。
-规则：使用注入的假 llm，离线、确定性，不许问 AI 要测试代码。
+说明：下面 Day6Tests 的两个用例由教练代写（用户选择 B 方案），
+非独立完成；真正的独立检验顺延到下一周计划里重做。
 """
 
 from __future__ import annotations
@@ -13,6 +13,7 @@ from __future__ import annotations
 import sys
 import unittest
 from pathlib import Path
+from unittest import mock
 
 # 让测试能 import 上一层的 agent.py（不引入打包/安装流程）
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -76,18 +77,102 @@ class PracticeTests(unittest.TestCase):
         self.assertEqual(handler_exp,handler_set)
 
 
-# ===== Day 6 TODO：在下面新增测试（至少两个）=====
-# 1) 同一工具连续失败满 2 次后进入“放弃重试”：
-#    断言恰好真正执行了 2 次，之后是放弃消息，且放弃消息仍以 role="tool" 回填、带原 tool_call_id。
-# 2) 成功一次会把失败计数清零（或你自己设计的等价边界）。
-# 提示：现有 _mock_llm 看到 [工具错误] 就收尾，触发不了连续失败，
-#       需要自己写一个“反复请求同一个工具”的假 llm。
+# ===== Day 6 限流测试（教练代写，非独立完成）=====
+
+WEATHER_CALL = {
+    "id": "call_weather",
+    "type": "function",
+    "function": {"name": "get_weather", "arguments": '{"city": "上海"}'},
+}
+
+
+def weather_script(tool_rounds: int, final_text: str) -> list[dict]:
+    """构造按顺序返回的假模型脚本：前 N 轮要 get_weather，最后给最终回答。"""
+
+    script = [
+        {"content": None, "tool_calls": [WEATHER_CALL]} for _ in range(tool_rounds)
+    ]
+    script.append({"content": final_text, "tool_calls": None})
+    return script
+
+
+def make_scripted_llm(responses: list[dict]):
+    """按顺序返回预设响应的假 llm；脚本用完还被调用就报错，暴露轮数超预期。"""
+
+    queue = list(responses)
+
+    def fake_llm(messages: list[dict]) -> dict:
+        if not queue:
+            raise AssertionError("假模型被调用次数超出脚本预期")
+        return queue.pop(0)
+
+    return fake_llm
+
+
 class Day6Tests(unittest.TestCase):
     def test_gives_up_after_two_consecutive_failures(self) -> None:
-        raise NotImplementedError("Day 6 TODO：补这个测试")
+        executed: list[str] = []
+
+        def failing_execute_tool(name: str, args: dict) -> str:
+            executed.append(name)
+            raise RuntimeError(f"天气服务暂时不可用（city={args.get('city')}）")
+
+        fake_llm = make_scripted_llm(
+            weather_script(3, "天气查不到，已放弃重试，请稍后再试。")
+        )
+
+        with mock.patch.object(agent, "execute_tool", side_effect=failing_execute_tool):
+            messages = agent.run_agent("上海天气怎么样？", llm=fake_llm)
+
+        # 真正执行只有 2 次，第 3 次请求被限流拦下
+        self.assertEqual(executed, ["get_weather", "get_weather"])
+
+        tool_messages = [m for m in messages if m["role"] == "tool"]
+        self.assertEqual(len(tool_messages), 3)  # 2 次失败 + 1 次放弃
+
+        give_up = tool_messages[-1]
+        self.assertTrue(give_up["content"].startswith("[工具错误]"))
+        self.assertIn("放弃重试", give_up["content"])
+        self.assertIn("get_weather", give_up["content"])
+        self.assertEqual(give_up["tool_call_id"], "call_weather")
+
+        self.assertEqual(messages[-1]["role"], "assistant")
+        self.assertIn("稍后再试", messages[-1]["content"])
 
     def test_success_resets_failure_counter(self) -> None:
-        raise NotImplementedError("Day 6 TODO：补这个测试")
+        executed: list[str] = []
+        outcomes: list = [
+            RuntimeError("第一次失败"),
+            "晴，25℃",
+            RuntimeError("第三次失败"),
+            RuntimeError("第四次失败"),
+        ]
+
+        def flaky_execute_tool(name: str, args: dict) -> str:
+            executed.append(name)
+            outcome = outcomes.pop(0)
+            if isinstance(outcome, Exception):
+                raise outcome
+            return outcome
+
+        fake_llm = make_scripted_llm(weather_script(4, "根据结果回答：晴，25℃"))
+
+        with mock.patch.object(agent, "execute_tool", side_effect=flaky_execute_tool):
+            messages = agent.run_agent(
+                "上海天气怎么样？", llm=fake_llm, max_attempts=6
+            )
+
+        # 失败→成功（清零）→失败→失败：第 4 次仍真正执行，说明成功那次把计数清零了
+        self.assertEqual(executed, ["get_weather"] * 4)
+        self.assertEqual(outcomes, [])
+
+        tool_messages = [m for m in messages if m["role"] == "tool"]
+        self.assertEqual(len(tool_messages), 4)
+        self.assertEqual(tool_messages[1]["content"], "晴，25℃")
+        self.assertFalse(
+            any("放弃重试" in str(m["content"]) for m in tool_messages)
+        )
+        self.assertEqual(messages[-1]["role"], "assistant")
 
 
 if __name__ == "__main__":
