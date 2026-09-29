@@ -139,6 +139,7 @@ def _run_assess(args: argparse.Namespace) -> int:
         print("\n已中断，本次结果未保存。")
         return 130
 
+    output_dir = args.output_dir or (repo_root() / "data" / "reports")
     report = build_report(model, answers)
     json_path, md_path = _save_report(report, output_dir)
 
