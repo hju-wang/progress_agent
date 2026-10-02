@@ -37,7 +37,13 @@
   两个测试与设计说明由教练代写（B 方案）；7 个测试全绿，按评分卡等价 90/100 但**独立完成度 0**，
   独立检验顺延到下一周用新任务重做。
 
-## Day 7：周复盘（待开始）
+## Day 7：周复盘（已完成）
 
-- [README + 复盘表模板](day7-weekly-review/README.md)：跑自测与差距报告，对照 09-08 基线定档，
-  产出复盘结论与 W40 周计划；W40 必须包含一次用新任务重做的独立检验。
+- [README + 复盘数据](day7-weekly-review/README.md)：自评 45.1 / 校正 41.1（基线 15.4），
+  逐项批阅出 5 处高报与 2 处低估；结论 A：继续收口阶段 1。
+
+## Day 8：独立检验（题目已就绪）
+
+- [README + 题目](day8-independent-check/README.md)：带 3 个缺陷的迷你 Agent 工具循环；
+  限时 90 分钟、少 AI，独立修复 + 补测试 + 写 [NOTES.md](day8-independent-check/NOTES.md) 根因分析。
+- 评分卡：[Day 8 独立检验评分卡](../assessments/papers/day8-independent-评分卡-v0.1.md)（满分 100，独立完成度必须满分）。

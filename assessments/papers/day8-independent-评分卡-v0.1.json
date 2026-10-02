@@ -1,0 +1,60 @@
+{
+  "schema": "progress-agent/exam-paper",
+  "id": "rubric-day8-independent-v0.1",
+  "title": "Day 8 独立检验 · 评分卡",
+  "version": "0.1",
+  "created": "2026-10-02",
+  "grader": "coach",
+  "type": "rubric",
+  "total_points": 100,
+  "pass_score": 80,
+  "independence_requirement": "独立完成度必须 10/10，本结果才计入 E1/E4/E6 独立证据",
+  "pass_condition": "总分 >= 80 且独立完成度满分；全部测试通过；三个缺陷全部修复",
+  "instructions": [
+    "限时 90 分钟，少 AI：可看自己的代码与官方文档，不许问 AI 要修复方案或测试代码。",
+    "交付：修复后的 app.py、新增至少 2 个测试、NOTES.md 根因分析。"
+  ],
+  "sections": [
+    {
+      "name": "缺陷修复",
+      "points": 45,
+      "items": [
+        { "name": "熔断边界（满 2 次放弃）", "points": 15 },
+        { "name": "成功清零（失败计数归零）", "points": 15 },
+        { "name": "注册表实例隔离", "points": 15 }
+      ]
+    },
+    {
+      "name": "新增测试",
+      "points": 25,
+      "items": [
+        { "name": "覆盖隐藏缺陷的测试", "points": 15 },
+        { "name": "边界/契约测试（清零 / 协议 / 未知工具 / 回归）", "points": 10 }
+      ]
+    },
+    {
+      "name": "回归与协议",
+      "points": 15,
+      "items": [
+        { "name": "原有 4 个测试全绿", "points": 5 },
+        { "name": "放弃消息 role=tool + tool_call_id + 工具名", "points": 5 },
+        { "name": "日期正常 / 未知工具 ValueError / 离线可跑", "points": 5 }
+      ]
+    },
+    {
+      "name": "根因分析",
+      "points": 10,
+      "items": [
+        { "name": "三个缺陷现象/根因/修复/防复发", "points": 8 },
+        { "name": "测试设计说明", "points": 2 }
+      ]
+    },
+    {
+      "name": "独立完成度",
+      "points": 10,
+      "items": [
+        { "name": "限时内独立完成、未索要修复或测试代码", "points": 10 }
+      ]
+    }
+  ]
+}
