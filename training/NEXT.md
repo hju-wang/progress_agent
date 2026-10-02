@@ -12,16 +12,14 @@
 - Day 4（LangGraph 对照）：✅ 已完成（验收卷 91/100）
 - Day 5（工程化收尾）：✅ 已完成（首考 64 → 补考 81/100 通过；Q4 为参考后重写、Q6 部分教练代填，独立程度待 Day 6 复验）
 - Day 6（独立检验）：⚠️ 已收口为**练习日（非独立）**——功能由用户完成，测试与设计说明由教练代写（B 方案）；7 个测试全绿，评分卡等价 90/100 但**独立完成度 0**。独立检验顺延。
-- Day 7（周复盘）：🔄 进行中，模板与数据清单在 [day7-weekly-review/README.md](day7-weekly-review/README.md)（已逾期：最后一次能力数据是 09-08 基线，岗位准备度 15.4/100）
+- Day 7（周复盘）：✅ 数据与复盘已产出（自评 45.1 / 校正后 41.1，基线 15.4）；复盘表见 [day7-weekly-review/README.md](day7-weekly-review/README.md)
 
 ## 接下来要做什么
 
-1. 用户按 [day7-weekly-review/README.md](day7-weekly-review/README.md) 跑能力自测与差距报告：
-   - `cd app && PYTHONPATH=src python3 -m progress_agent assess`
-   - `cd app && PYTHONPATH=src python3 -m progress_agent gap --assessment ../data/reports/<新报告>.json`
-2. 教练按新报告对比 09-08 基线，写 Day 7 周复盘（哪些能力真进了 2 档、哪些没动、两周空档的影响）。
-3. 教练按数据出 W40 周计划（09-29 ~ 10-05），其中包含：用**新任务**重做的独立检验（覆盖 Day 6 未独立验证的限流/测试能力，以及 RAG 0 命中、LangGraph 状态契约、注册表/DI/断言方向）。
-4. 独立检验通过后进入下一阶段（或按复盘结论调整方向）。
+1. 用户确认复盘里的 7 处档位校正（C1/E2/E5/F1/F3 下调；B1/C2 上调）；有异议就逐项对证据。
+2. 教练写 W41 周计划（10-05 ~ 10-11），包含：新任务的独立检验、RAG 进阶（A5→2）、FastAPI+SSE（E3→2）、async 并发（E2→2）、A1/A3 概念补漏、周末复测。
+3. 独立检验通过后进入下一阶段（或按复测结论调整方向）。
+4. 参考文档：[检测参考问题 · 详细解答 v0.1](../docs/检测参考问题-详细解答-v0.1.md)（31 项全量）。
 
 ## 评分规则（2026-09-10 起）
 
