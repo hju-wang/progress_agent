@@ -21,7 +21,8 @@
 1. 用户开始 Day 8 并自行计时 90 分钟：读 [day8-independent-check/README.md](day8-independent-check/README.md)，修复 3 个缺陷 + 新增至少 2 个测试 + 写 NOTES.md。
 2. 教练按 [评分卡](../assessments/papers/day8-independent-评分卡-v0.1.md) 打分（满分 100、通过线 80）；**独立完成度必须满分**才计入 E1/E4/E6 的独立证据。
 3. 之后按 W41 计划推进 Day 9–14（RAG 进阶、FastAPI+SSE、async 并发、A1/A3 概念、周末复测）。
-4. 参考文档：[检测参考问题 · 详细解答 v0.1](../docs/检测参考问题-详细解答-v0.1.md)（31 项全量）。
+4. 参考文档：[详细解答 v0.1](../docs/检测参考问题-详细解答-v0.1.md)（要点骨架）与
+   [面试背诵版 v0.1](../docs/检测参考问题-面试背诵版-v0.1.md)（31 项可直接背 + 证据标签）。
 
 ## 评分规则（2026-09-10 起）
 
