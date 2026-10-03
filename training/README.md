@@ -42,8 +42,11 @@
 - [README + 复盘数据](day7-weekly-review/README.md)：自评 45.1 / 校正 41.1（基线 15.4），
   逐项批阅出 5 处高报与 2 处低估；结论 A：继续收口阶段 1。
 
-## Day 8：独立检验（题目已就绪）
+## Day 8：独立检验（⚠️ 辅导下完成，非独立）
 
-- [README + 题目](day8-independent-check/README.md)：带 3 个缺陷的迷你 Agent 工具循环；
-  限时 90 分钟、少 AI，独立修复 + 补测试 + 写 [NOTES.md](day8-independent-check/NOTES.md) 根因分析。
-- 评分卡：[Day 8 独立检验评分卡](../assessments/papers/day8-independent-评分卡-v0.1.md)（满分 100，独立完成度必须满分）。
+- [README + Day 8 记录](day8-independent-check/README.md)：带 3 个缺陷的迷你 Agent 工具循环；
+  三处缺陷全部修复、新增 2 个测试、6 例全绿，卷面 **92/100** 通过；
+  但**独立完成度 0/10**（期间索要过测试代码、教练给过定位提示）→ 不计入独立证据，
+  独立检验顺延 W41 用**全新任务**重做（本题已看参考，不能复用）。
+- 评分卡：[Day 8 独立检验评分卡](../assessments/papers/day8-independent-评分卡-v0.1.md)（满分 100，通过线 80）。
+- 教练参考（非本人作答）：[REFERENCE-coach-notes-v0.1.md](day8-independent-check/REFERENCE-coach-notes-v0.1.md)。

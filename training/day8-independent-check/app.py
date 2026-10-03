@@ -16,6 +16,8 @@ import json
 import sys
 from typing import Any, Callable
 
+MAX_CONSECUTIVE_FAILURES = 2
+
 SYSTEM_PROMPT = (
     "你是工具调用助手。需要实时信息时使用工具；"
     "工具执行结果会以 role='tool' 的消息返回给你，请基于结果作答。"
@@ -60,9 +62,9 @@ class ToolRegistry:
     """工具注册表：维护工具名到处理函数的映射。"""
 
     def __init__(
-        self, tools: dict[str, Callable[[dict[str, Any]], str]] = {}
+        self, tools: dict[str, Callable[[dict[str, Any]], str]] | None = None
     ) -> None:
-        self._tools = tools
+        self._tools = {} if tools is None else tools
 
     def register(
         self, name: str, handler: Callable[[dict[str, Any]], str]
@@ -123,14 +125,14 @@ def run_agent(
             print(f"[工具] {name}({arguments})")
 
             fails = fail_counts.get(name, 0)
-            if fails > 2:
+            if fails >= MAX_CONSECUTIVE_FAILURES:
                 result = (
                     f"[工具错误] 该工具已连续失败 2 次，放弃重试（tool={name}）"
                 )
             else:
                 try:
                     result = registry.execute(name, arguments)
-                    fail_counts[name] = fail_counts.get(name, 0) + 1
+                    fail_counts[name] = 0
                 except Exception as error:
                     fail_counts[name] = fail_counts.get(name, 0) + 1
                     result = (

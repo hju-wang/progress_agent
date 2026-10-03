@@ -68,7 +68,6 @@ class FailureHandlingTests(unittest.TestCase):
         registry = app.build_registry()
         executed: list[str] = []
         real_execute = registry.execute
-
         def counting_execute(name: str, args: dict) -> str:
             executed.append(name)
             return real_execute(name, args)
@@ -122,5 +121,55 @@ class FailureHandlingTests(unittest.TestCase):
         )
 
 
+
+#自己写的测试
+
+# def get_today(args: dict[str, Any]) -> str:
+#     return datetime.date.today().isoformat()
+
+
+# def get_weather(args: dict[str, Any]) -> str:
+#     """模拟不稳定的第三方服务：固定抛错。"""
+
+#     city = args.get("city", "未知城市")
+#     raise RuntimeError(f"天气服务暂时不可用（city={city}）")
+
+class SameToolRegistryObj(unittest.TestCase):
+    def test_tool_registry(self)->None:
+        registry_a = app.ToolRegistry()
+        registry_b = app.ToolRegistry()
+        registry_a.register("get_today", app.get_today)
+        registry_b.register("get_weather",app.get_weather)
+        
+        #这时候a 中不应该有 get_weather ,b 不应该污染 a
+        self.assertNotIn("get_weather",registry_a.names())
+        self.assertNotIn("get_today",registry_b.names())
+
+
+class CircuitBreakerBoundaryTests(unittest.TestCase):
+    def test_single_failure_does_not_trip_the_breaker(self) -> None:
+        registry = app.build_registry()
+        executed: list[str] = []
+        outcomes: list = [RuntimeError("第一次失败"), "晴，25℃"]
+
+        def flaky_execute(name: str, args: dict) -> str:
+            executed.append(name)
+            outcome = outcomes.pop(0)
+            if isinstance(outcome, Exception):
+                raise outcome
+            return outcome
+
+        llm = make_scripted_llm(weather_script(2, "根据结果回答：晴，25℃"))
+        with mock.patch.object(registry, "execute", side_effect=flaky_execute):
+            messages = app.run_agent("上海天气怎么样？", llm, registry)
+
+        # 只失败 1 次 → 不该熔断，第 2 次必须真正执行
+        self.assertEqual(executed, ["get_weather", "get_weather"])
+        tool_messages = [m for m in messages if m["role"] == "tool"]
+        self.assertFalse(
+            any("放弃重试" in str(m["content"]) for m in tool_messages)
+        )
+        
+        
 if __name__ == "__main__":
     unittest.main()
