@@ -17,11 +17,13 @@
 - Day 8（独立检验）：⚠️ **辅导下完成（非独立）**——3 个缺陷全部修复、新增 2 个测试、6 例全绿，卷面 **92/100** 通过；
   但**独立完成度 0/10**（期间向教练索要过测试代码、教练给过定位提示），**不计入 E1/E4/E6 独立证据**；
   记录见 [day8-independent-check/README.md](day8-independent-check/README.md)
-- Day 9（RAG 进阶 · 向量检索）：🟢 **脚手架已就绪**（3 个 TODO + 8 条测试 + 对比实验），明天开做
+- Day 9（RAG 进阶 · 向量检索）：✅ **通过 85/100**（2026-10-05）——3 个 TODO 实现完毕、8 测试全绿、
+  对比实验达标（向量 100%@1 / MRR 1.000 vs 关键词 80%@1 / 0.900）；复述三题未完成（Q1/Q2 半答、Q3 基本达标）；
+  记录见 [day9-vector-retrieval/README.md](day9-vector-retrieval/README.md)
 
 ## 接下来要做什么
 
-1. **Day 9（先做这个）**：入口 [day9-vector-retrieval/README.md](day9-vector-retrieval/README.md)——把 Day 3 的玩具检索升级为 TF-IDF 向量 + 余弦相似度：3 个 TODO（向量化 / 相似度 / 检索与 0 命中）、8 条测试先红后绿、跑 `evaluate.py` 看关键词 vs 向量的对比（实测 80%@1 / MRR 0.900 → 100%@1 / MRR 1.000），最后回答 3 道复述题。
+1. **Day 10（下一步）**：RAG 进阶 2——混合检索（BM25 + 向量，RRF）+ rerank + 0 命中处理 + 引用溯源 + 小 eval（召回率 / MRR）；顺带补 Day 9 复述 Q1「现象」半句、Q2 自己跑一次 idf 消融后按实测重答，**A5 升 2 档以 Day 10 验收为准**。
 2. **独立检验（补做）**：用一个**全新缺陷**的小任务、限时且零提示重做（W41 内安排，90 分钟或压缩到 30 分钟）；通过后 E1/E4/E6 才算拿到独立证据。
 3. Day 10–14 按 W41 继续（混合检索 + rerank + 小 eval、FastAPI+SSE、async 并发、A1/A3 概念、周末复测）。
 4. 可选补分（不影响状态）：[NOTES.md](day8-independent-check/NOTES.md) 里缺陷 2「如何防复发」与「测试设计说明」两处仍空缺，补齐可补回 3 分、卷面到 95。

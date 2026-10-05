@@ -188,35 +188,42 @@ def compute_idf(chunks: list[Chunk]) -> dict[str, float]:
 
 def embed(tokens: list[str], idf: dict[str, float]) -> dict[str, float]:
     """把 token 列表编码成稀疏 TF-IDF 向量：``{token: 权重}``。
-
-    TODO-1（向量化）—— 你来写：
-
-      1. 统计每个 token 在这段文本里出现了几次，记为 tf；
-      2. 该 token 的权重 = tf × idf[token]（idf 里查不到的 token 直接跳过，
-         因为它对任何向量都是 0 贡献）；
-      3. 返回 ``{token: 权重}``；输入为空时返回 ``{}``。
-
-    想一想：这里为什么**不**做归一化？（提示：归一化是 TODO-2 里分母的活，
-    职责分开，将来用未归一化的向量调用余弦函数也不会算错。）
     """
+    # 先计算tf
+    tf = {}
+    for token in tokens:
+        tf[token]= tf.get(token,0)+1
+    
+    #再计算向量
+    vec = {}
+    for token,count in tf.items():
+        if token in idf:
+            vec[token]= count * idf[token]
+    
+    return vec            
 
-    raise NotImplementedError("TODO-1 还没实现：embed() 现在编码不出向量")
 
 
 def cosine_similarity(a: dict[str, float], b: dict[str, float]) -> float:
     """两个稀疏向量的余弦相似度：``点积 / (|a| × |b|)``。
-
-    TODO-2（相似度）—— 你来写：
-
-      1. 分子 = 两个向量**共有** token 的权重乘积之和（点积）；
-      2. 分母 = 两个向量各自的 L2 范数（``sqrt(权重平方和)``）相乘；
-      3. 任一向量为空、或范数为 0 时返回 ``0.0``（避免除零）。
-
-    权重非负时结果落在 0.0 ~ 1.0：完全一样的方向是 1.0，没有任何共同 token 是 0.0。
-    提示：遍历两个字典里较短的那个来算点积，比遍历全部更省。
     """
-
-    raise NotImplementedError("TODO-2 还没实现：cosine_similarity() 还算不出分数")
+    if not a or not b:
+        return 0.0
+    #遍历短的 token
+    dot = 0
+    if len(a) > len(b):
+       a,b = b,a
+    for token ,wa in a.items():
+       dot += wa * b.get(token,0.0)
+            
+    vec_len_a = math.sqrt(sum(weight * weight for weight in a.values()))    
+    vec_len_b = math.sqrt(sum(weight * weight for weight in b.values())) 
+    
+    # 防除 0
+    
+    if vec_len_a == 0.0 or vec_len_b ==  0.0 :
+        return 0.0
+    return dot/ (vec_len_a * vec_len_b)
 
 
 @dataclass
@@ -252,21 +259,34 @@ class VectorIndex:
         self, question: str, k: int = 2, min_score: float = 0.05
     ) -> list[Hit]:
         """检索与 question 最相关的 k 个块。
-
-        TODO-3（检索与 0 命中）—— 你来写：
-
-          1. 用 ``self.idf`` 把 question 编码成查询向量；
-          2. 与每个块的 ``vector`` 算余弦相似度；
-          3. 按分数**降序**排序；同分时按 chunk id 升序，保证结果稳定可复现；
-          4. 丢掉分数低于 ``min_score`` 的结果，再取前 k 个；
-          5. 一个都不剩就返回**空列表**——这就是「0 命中」，
-             调用方要据此如实告诉用户"知识库里没有相关内容"，而不是硬凑一条。
-
-        ``min_score`` 是门槛：没有它，任何问题都能撞到一条低分资料，
-        RAG 的防幻觉就失效了。
         """
-
-        raise NotImplementedError("TODO-3 还没实现：search() 现在检索不出结果")
+        # 1 编码成查询向量
+        question_vector = embed(tokenize(question),self.idf)
+        if not question_vector:
+                return []
+        # 2、计算相似度
+        cos_scored = [(cosine_similarity(question_vector,chunk.vector),chunk) for chunk in self.chunks]
+        # 3、-item[0] 分数越大，其值越小，就会排在前面，item[1].id 就是 chunk_id
+        cos_scored.sort(key=lambda item: (-item[0],item[1].id))
+        # 4、丢掉分数低于 ``min_score`` 的结果，再取前 k 个；
+        scored = [score for score in cos_scored if score[0]>min_score][:k]
+        
+        hit :list[Hit] = []
+        for sim,doc in scored:
+            hit.append(
+                Hit(
+                    id = doc.id,
+                    doc_id = doc.doc_id,
+                    title  = doc.title,
+                    text= doc.text,
+                    score=sim
+                )
+            )
+        
+        return hit
+        
+        
+       
 
 
 # ---------------------------------------------------------------------------

@@ -53,8 +53,8 @@ K = 3
 
 @dataclass
 class Case:
-    question: str
-    expected_doc: str
+    question: str # 查询的问题
+    expected_doc: str # 期望
     kind: str = "normal"  # normal | paraphrase | out_of_scope
     note: str = ""
 

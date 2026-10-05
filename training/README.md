@@ -51,10 +51,10 @@
 - 评分卡：[Day 8 独立检验评分卡](../assessments/papers/day8-independent-评分卡-v0.1.md)（满分 100，通过线 80）。
 - 教练参考（非本人作答）：[REFERENCE-coach-notes-v0.1.md](day8-independent-check/REFERENCE-coach-notes-v0.1.md)。
 
-## Day 9：RAG 进阶 1 · 向量检索（🟢 题目已就绪）
+## Day 9：RAG 进阶 1 · 向量检索（✅ 通过 85/100）
 
-- [README + 脚手架](day9-vector-retrieval/README.md)：把 Day 3 的 toy 检索升级成
-  TF-IDF 向量 + 余弦相似度（本地索引、零依赖、离线）；3 个 TODO（向量化 / 相似度 / 检索与 0 命中）、
-  8 条现成验收测试、`evaluate.py` 关键词 vs 向量对比实验。
-- 对比实验数据（教练实测）：关键词基线 命中率@1 80% / MRR 0.900；TF-IDF 向量 100% / MRR 1.000，
-  差异来源已写明（打平处理 + 长度偏置，而非语义理解）。
+- [README + Day 9 记录](day9-vector-retrieval/README.md)：把 Day 3 的 toy 检索升级成
+  TF-IDF 向量 + 余弦相似度（本地索引、零依赖、离线）；3 个 TODO 全部实现、8 测试全绿、
+  `evaluate.py` 对比实验达标（向量 100%@1 / MRR 1.000 vs 关键词 80%@1 / 0.900）。
+- 复述三题为未完成项：Q1、Q2 各半答，Q3 基本达标 → **A5 维持 1 档**，
+  升 2 档以 Day 10（混合检索 / rerank / 引用溯源 / 小 eval）验收为准。
